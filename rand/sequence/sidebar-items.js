@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Choose","This trait implements a `choose` operations on slices and sequences."],["Shuffle","This trait introduces a `shuffle` operations on slices."]]});

@@ -272,6 +272,8 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -379,6 +381,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
 <span class="doccomment">/// use rand::{Rng, SeedableRng, StdRng};</span>
+<span class="doccomment">/// use rand::dist::ascii_word_char;</span>
 <span class="doccomment">/// use rand::reseeding::{Reseeder, ReseedingRng};</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// struct TickTockReseeder { tick: bool }</span>
@@ -395,8 +398,8 @@
 <span class="doccomment">///     let inner = StdRng::new().unwrap();</span>
 <span class="doccomment">///     let mut rng = ReseedingRng::new(inner, 10, rsdr);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">///     // this will repeat, because it gets reseeded very regularly.</span>
-<span class="doccomment">///     let s: String = rng.gen_ascii_chars().take(100).collect();</span>
+<span class="doccomment">///     // this will repeat, because it gets reseeded very frequently.</span>
+<span class="doccomment">///     let s: String = rng.iter().map(|rng| ascii_word_char(rng)).take(100).collect();</span>
 <span class="doccomment">///     println!(&quot;{}&quot;, s);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
@@ -424,8 +427,9 @@
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
-    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ReseedingRng</span>, <span class="ident">ReseedWithDefault</span>};
     <span class="kw">use</span> {<span class="ident">SeedableRng</span>, <span class="ident">Rng</span>};
+    <span class="kw">use</span> <span class="ident">dist</span>::<span class="ident">ascii_word_char</span>;
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ReseedingRng</span>, <span class="ident">ReseedWithDefault</span>};
 
     <span class="kw">struct</span> <span class="ident">Counter</span> {
         <span class="ident">i</span>: <span class="ident">u32</span>
@@ -468,18 +472,18 @@
     <span class="kw">fn</span> <span class="ident">test_rng_seeded</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ra</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">2</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rb</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">2</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(::<span class="ident">test</span>::<span class="ident">iter_eq</span>(<span class="ident">ra</span>.<span class="ident">gen_ascii_chars</span>().<span class="ident">take</span>(<span class="number">100</span>),
-                                <span class="ident">rb</span>.<span class="ident">gen_ascii_chars</span>().<span class="ident">take</span>(<span class="number">100</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(::<span class="ident">test</span>::<span class="ident">iter_eq</span>(<span class="ident">ra</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>),
+                                <span class="ident">rb</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>)));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_rng_reseed</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">3</span>));
-        <span class="kw">let</span> <span class="ident">string1</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">gen_ascii_chars</span>().<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">string1</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
 
         <span class="ident">r</span>.<span class="ident">reseed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">3</span>));
 
-        <span class="kw">let</span> <span class="ident">string2</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">gen_ascii_chars</span>().<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">string2</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">string1</span>, <span class="ident">string2</span>);
     }
 

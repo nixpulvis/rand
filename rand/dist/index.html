@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `dist` mod in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, dist">
+
+    <title>rand::dist - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    <link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico">
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
+        <p class='location'>Module dist</p><div class="block items"><ul><li><a href="#reexports">Reexports</a></li><li><a href="#modules">Modules</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'dist', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rand</a>::<wbr><a class="mod" href=''>dist</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/rand/dist/mod.rs.html#11-141' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Sampling from random distributions.</p>
+
+<p>A distribution may have internal state describing the distribution of
+generated values; for example <code>Range</code> needs to know its upper and lower
+bounds. Distributions use the <code>Distribution</code> trait to yield values: call
+<code>dist.sample(&amp;mut rng)</code> to get a random variable.</p>
+
+<p>TODO: is it worth exposing both submodules and re-exporting their members?</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use self::<a class="mod" href="./default/index.html">default</a>::<a class="struct" href="../../rand/dist/default/struct.DefaultDist.html" title="struct rand::dist::default::DefaultDist">DefaultDist</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./default/index.html">default</a>::<a class="trait" href="../../rand/dist/default/trait.SampleDefault.html" title="trait rand::dist::default::SampleDefault">SampleDefault</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.uniform.html" title="fn rand::dist::uniform::uniform">uniform</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.uniform01.html" title="fn rand::dist::uniform::uniform01">uniform01</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.open01.html" title="fn rand::dist::uniform::open01">open01</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.closed01.html" title="fn rand::dist::uniform::closed01">closed01</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.codepoint.html" title="fn rand::dist::uniform::codepoint">codepoint</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./uniform/index.html">uniform</a>::<a class="fn" href="../../rand/dist/uniform/fn.ascii_word_char.html" title="fn rand::dist::uniform::ascii_word_char">ascii_word_char</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./range/index.html">range</a>::<a class="fn" href="../../rand/dist/range/fn.range.html" title="fn rand::dist::range::range">range</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./range/index.html">range</a>::<a class="struct" href="../../rand/dist/range/struct.Range.html" title="struct rand::dist::range::Range">Range</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./gamma/index.html">gamma</a>::<a class="struct" href="../../rand/dist/gamma/struct.Gamma.html" title="struct rand::dist::gamma::Gamma">Gamma</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./gamma/index.html">gamma</a>::<a class="struct" href="../../rand/dist/gamma/struct.ChiSquared.html" title="struct rand::dist::gamma::ChiSquared">ChiSquared</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./gamma/index.html">gamma</a>::<a class="struct" href="../../rand/dist/gamma/struct.FisherF.html" title="struct rand::dist::gamma::FisherF">FisherF</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./gamma/index.html">gamma</a>::<a class="struct" href="../../rand/dist/gamma/struct.StudentT.html" title="struct rand::dist::gamma::StudentT">StudentT</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./normal/index.html">normal</a>::<a class="struct" href="../../rand/dist/normal/struct.Normal.html" title="struct rand::dist::normal::Normal">Normal</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./normal/index.html">normal</a>::<a class="struct" href="../../rand/dist/normal/struct.LogNormal.html" title="struct rand::dist::normal::LogNormal">LogNormal</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./exponential/index.html">exponential</a>::<a class="struct" href="../../rand/dist/exponential/struct.Exp.html" title="struct rand::dist::exponential::Exp">Exp</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="default/index.html"
+                                  title='mod rand::dist::default'>default</a></td>
+                           <td class='docblock-short'>
+                                <p>Generic value creation</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="exponential/index.html"
+                                  title='mod rand::dist::exponential'>exponential</a></td>
+                           <td class='docblock-short'>
+                                <p>The exponential distribution.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="gamma/index.html"
+                                  title='mod rand::dist::gamma'>gamma</a></td>
+                           <td class='docblock-short'>
+                                <p>The Gamma and derived distributions.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="normal/index.html"
+                                  title='mod rand::dist::normal'>normal</a></td>
+                           <td class='docblock-short'>
+                                <p>The normal and derived distributions.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="range/index.html"
+                                  title='mod rand::dist::range'>range</a></td>
+                           <td class='docblock-short'>
+                                <p>Generating numbers between two others.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="uniform/index.html"
+                                  title='mod rand::dist::uniform'>uniform</a></td>
+                           <td class='docblock-short'>
+                                <p>Generating uniformly distributed numbers</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="weighted/index.html"
+                                  title='mod rand::dist::weighted'>weighted</a></td>
+                           <td class='docblock-short'>
+                                <p>Weighted choices</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.Distribution.html"
+                                  title='trait rand::dist::Distribution'>Distribution</a></td>
+                           <td class='docblock-short'>
+                                <p>Types (distributions) that can be used to create a random instance of <code>T</code>.</p>
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.weighted_bool.html"
+                                  title='fn rand::dist::weighted_bool'>weighted_bool</a></td>
+                           <td class='docblock-short'>
+                                <p>Return a bool with a 1 in n chance of being true</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rand";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

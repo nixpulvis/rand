@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["RngFlatMap",""],["RngIterator","Pseudo-iterator encapsulating a random number generator. See `Rng::iter`."],["RngMap",""]]});
