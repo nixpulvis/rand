@@ -380,7 +380,7 @@
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use rand::{Rng, SeedableRng, StdRng};</span>
+<span class="doccomment">/// use rand::{Rng, SeedableRng, StdRng, iter};</span>
 <span class="doccomment">/// use rand::dist::ascii_word_char;</span>
 <span class="doccomment">/// use rand::reseeding::{Reseeder, ReseedingRng};</span>
 <span class="doccomment">///</span>
@@ -399,12 +399,12 @@
 <span class="doccomment">///     let mut rng = ReseedingRng::new(inner, 10, rsdr);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">///     // this will repeat, because it gets reseeded very frequently.</span>
-<span class="doccomment">///     let s: String = rng.iter().map(|rng| ascii_word_char(rng)).take(100).collect();</span>
+<span class="doccomment">///     let s: String = iter(&amp;mut rng).map(|rng| ascii_word_char(rng)).take(100).collect();</span>
 <span class="doccomment">///     println!(&quot;{}&quot;, s);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Reseed the given RNG.</span>
     <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>);
 }
@@ -414,7 +414,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReseedWithDefault</span>;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span> <span class="op">+</span> <span class="ident">Default</span><span class="op">&gt;</span> <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ReseedWithDefault</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ReseedWithDefault</span> {
     <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) {
         <span class="kw-2">*</span><span class="ident">rng</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
     }
@@ -427,7 +427,7 @@
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
-    <span class="kw">use</span> {<span class="ident">SeedableRng</span>, <span class="ident">Rng</span>};
+    <span class="kw">use</span> {<span class="ident">SeedableRng</span>, <span class="ident">Rng</span>, <span class="ident">iter</span>};
     <span class="kw">use</span> <span class="ident">dist</span>::<span class="ident">ascii_word_char</span>;
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ReseedingRng</span>, <span class="ident">ReseedWithDefault</span>};
 
@@ -472,18 +472,18 @@
     <span class="kw">fn</span> <span class="ident">test_rng_seeded</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ra</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">2</span>));
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rb</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">2</span>));
-        <span class="macro">assert</span><span class="macro">!</span>(::<span class="ident">test</span>::<span class="ident">iter_eq</span>(<span class="ident">ra</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>),
-                                <span class="ident">rb</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>)));
+        <span class="macro">assert</span><span class="macro">!</span>(::<span class="ident">test</span>::<span class="ident">iter_eq</span>(<span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ra</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>),
+                                <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rb</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>)));
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_rng_reseed</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span>: <span class="ident">MyRng</span> <span class="op">=</span> <span class="ident">SeedableRng</span>::<span class="ident">from_seed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">3</span>));
-        <span class="kw">let</span> <span class="ident">string1</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">string1</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
 
         <span class="ident">r</span>.<span class="ident">reseed</span>((<span class="ident">ReseedWithDefault</span>, <span class="number">3</span>));
 
-        <span class="kw">let</span> <span class="ident">string2</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">string2</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">rng</span><span class="op">|</span> <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)).<span class="ident">take</span>(<span class="number">100</span>).<span class="ident">collect</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">string1</span>, <span class="ident">string2</span>);
     }
 

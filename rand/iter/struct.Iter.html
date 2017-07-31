@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `RngIterator` struct in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, RngIterator">
+    <meta name="description" content="API documentation for the Rust `Iter` struct in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Iter">
 
-    <title>rand::iter::RngIterator - Rust</title>
+    <title>rand::iter::Iter - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Struct RngIterator</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>iter</a></p><script>window.sidebarCurrent = {name: 'RngIterator', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Iter</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>iter</a></p><script>window.sidebarCurrent = {name: 'Iter', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,21 +44,21 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rand</a>::<wbr><a href='index.html'>iter</a>::<wbr><a class="struct" href=''>RngIterator</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rand</a>::<wbr><a href='index.html'>iter</a>::<wbr><a class="struct" href=''>Iter</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/rand/iter.rs.html#24-27' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct RngIterator&lt;'a, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + 'a&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Pseudo-iterator encapsulating a random number generator.
+<pre class='rust struct'>pub struct Iter&lt;'a, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'a&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Pseudo-iterator encapsulating a random number generator.
 See <a href="trait.Rng.html#method.iter"><code>Rng::iter</code></a>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + 'a&gt; <a class="struct" href="../../rand/iter/struct.RngIterator.html" title="struct rand::iter::RngIterator">RngIterator</a>&lt;'a, R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rand/iter.rs.html#29-60' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'a&gt; <a class="struct" href="../../rand/iter/struct.Iter.html" title="struct rand::iter::Iter">Iter</a>&lt;'a, R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rand/iter.rs.html#48-79' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.take' class="method"><span id='take.v' class='invisible'><code>fn <a href='#method.take' class='fnname'>take</a>(self, len: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Restrict number of generated items to at most <code>len</code></p>
-</div><h4 id='method.map' class="method"><span id='map.v' class='invisible'><code>fn <a href='#method.map' class='fnname'>map</a>&lt;B, F&gt;(self, f: F) -&gt; <a class="struct" href="../../rand/iter/struct.RngMap.html" title="struct rand::iter::RngMap">RngMap</a>&lt;'a, R, B, F&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html" title="trait core::ops::FnMut">FnMut</a>(&amp;mut R) -&gt; B,&nbsp;</span></code></span></h4>
+</div><h4 id='method.map' class="method"><span id='map.v' class='invisible'><code>fn <a href='#method.map' class='fnname'>map</a>&lt;B, F&gt;(self, f: F) -&gt; <a class="struct" href="../../rand/iter/struct.Map.html" title="struct rand::iter::Map">Map</a>&lt;'a, R, B, F&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html" title="trait core::ops::FnMut">FnMut</a>(&amp;mut R) -&gt; B,&nbsp;</span></code></span></h4>
 <div class='docblock'><p>Produce an iterator returning a mapped value</p>
-</div><h4 id='method.flat_map' class="method"><span id='flat_map.v' class='invisible'><code>fn <a href='#method.flat_map' class='fnname'>flat_map</a>&lt;U, F&gt;(self, f: F) -&gt; <a class="struct" href="../../rand/iter/struct.RngFlatMap.html" title="struct rand::iter::RngFlatMap">RngFlatMap</a>&lt;'a, R, U, F&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html" title="trait core::ops::FnMut">FnMut</a>(&amp;mut R) -&gt; U,<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html" title="trait core::iter::traits::IntoIterator">IntoIterator</a>,&nbsp;</span></code></span></h4>
+</div><h4 id='method.flat_map' class="method"><span id='flat_map.v' class='invisible'><code>fn <a href='#method.flat_map' class='fnname'>flat_map</a>&lt;U, F&gt;(self, f: F) -&gt; <a class="struct" href="../../rand/iter/struct.FlatMap.html" title="struct rand::iter::FlatMap">FlatMap</a>&lt;'a, R, U, F&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;F: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html" title="trait core::ops::FnMut">FnMut</a>(&amp;mut R) -&gt; U,<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html" title="trait core::iter::traits::IntoIterator">IntoIterator</a>,&nbsp;</span></code></span></h4>
 <div class='docblock'><p>Produce an iterator returning a flat-mapped value</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, R:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + <a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + 'a&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../rand/iter/struct.RngIterator.html" title="struct rand::iter::RngIterator">RngIterator</a>&lt;'a, R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rand/iter.rs.html#23' title='goto source code'>[src]</a></span></h3>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a, R:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> + <a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'a&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../rand/iter/struct.Iter.html" title="struct rand::iter::Iter">Iter</a>&lt;'a, R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rand/iter.rs.html#23' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>

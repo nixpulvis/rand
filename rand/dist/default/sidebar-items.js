@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DefaultDist","A generic random value creator. Generates values using what appears to be an appropriate distribution for each type, but choice is arbitrary."]],"trait":[["SampleDefault","Types supporting default sampling (see `DefaultDist`)"]]});
+initSidebarItems({"struct":[["Default","A generic random value distribution. Generates values using what appears to be \"the best\" distribution for each type, but ultimately the choice is arbitrary."]]});

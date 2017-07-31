@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `SampleDefault` trait in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, SampleDefault">
+    <meta name="description" content="API documentation for the Rust `Rand` trait in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Rand">
 
-    <title>rand::dist::default::SampleDefault - Rust</title>
+    <title>rand::dist::Rand - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
     
 
     <link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico">
@@ -28,8 +28,8 @@
     
 
     <nav class="sidebar">
-        <a href='../../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Trait SampleDefault</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a>::<wbr><a href='index.html'>default</a></p><script>window.sidebarCurrent = {name: 'SampleDefault', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
+        <p class='location'>Trait Rand</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>dist</a></p><script>window.sidebarCurrent = {name: 'Rand', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,25 +44,23 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Trait <a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a>::<wbr><a href='index.html'>default</a>::<wbr><a class="trait" href=''>SampleDefault</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rand</a>::<wbr><a href='index.html'>dist</a>::<wbr><a class="trait" href=''>Rand</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rand/dist/default.rs.html#77-80' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait SampleDefault {
-    fn <a href='#tymethod.sample_default' class='fnname'>sample_default</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(rng: &amp;mut R) -&gt; Self;
-}</pre><div class='docblock'><p>Types supporting default sampling (see <code>DefaultDist</code>)</p>
+               </span><a class='srclink' href='../../src/rand/dist/mod.rs.html#65-67' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Rand&lt;Dist&gt; {
+    fn <a href='#tymethod.rand' class='fnname'>rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R, dist: Dist) -&gt; Self;
+}</pre><div class='docblock'><p>Generic trait for sampling random values from some distribution</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.sample_default' class='method'><span id='sample_default.v' class='invisible'><code>fn <a href='#tymethod.sample_default' class='fnname'>sample_default</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(rng: &amp;mut R) -&gt; Self</code></span></h3><div class='docblock'><p>Sample a value using an RNG</p>
-</div></div>
+        <h3 id='tymethod.rand' class='method'><span id='rand.v' class='invisible'><code>fn <a href='#tymethod.rand' class='fnname'>rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R, dist: Dist) -&gt; Self</code></span></h3></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;T:&nbsp;<a class="trait" href="../../../rand/dist/uniform/trait.SampleUniform.html" title="trait rand::dist::uniform::SampleUniform">SampleUniform</a>&gt; SampleDefault for T</code></li>
-<li><code>impl SampleDefault for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a></code></li>
+    <li><code>impl&lt;T, D:&nbsp;<a class="trait" href="../../rand/dist/trait.Distribution.html" title="trait rand::dist::Distribution">Distribution</a>&lt;T&gt;&gt; Rand&lt;D&gt; for T</code></li>
 </ul><script type="text/javascript" async
-                         src="../../../implementors/rand/dist/default/trait.SampleDefault.js">
+                         src="../../implementors/rand/dist/trait.Rand.js">
                  </script></section>
     <section id='search' class="content hidden"></section>
 
@@ -117,10 +115,10 @@
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../";
         window.currentCrate = "rand";
     </script>
-    <script src="../../../main.js"></script>
-    <script defer src="../../../search-index.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

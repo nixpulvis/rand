@@ -48,14 +48,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/sequence.rs.html#68-87' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/sequence.rs.html#98-117' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Shuffle {
-    fn <a href='#tymethod.shuffle' class='fnname'>shuffle</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(self, rng: &amp;mut R);
+    fn <a href='#tymethod.shuffle' class='fnname'>shuffle</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(self, rng: &amp;mut R);
 }</pre><div class='docblock'><p>This trait introduces a <code>shuffle</code> operations on slices.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.shuffle' class='method'><span id='shuffle.v' class='invisible'><code>fn <a href='#tymethod.shuffle' class='fnname'>shuffle</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(self, rng: &amp;mut R)</code></span></h3><div class='docblock'><p>Shuffle a mutable sequence in place.</p>
+        <h3 id='tymethod.shuffle' class='method'><span id='shuffle.v' class='invisible'><code>fn <a href='#tymethod.shuffle' class='fnname'>shuffle</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(self, rng: &amp;mut R)</code></span></h3><div class='docblock'><p>Shuffle a mutable sequence in place.</p>
 
 <p>This applies Durstenfeld&#39;s algorithm for the <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm">Fisher–Yates shuffle</a>
 which produces an unbiased permutation.</p>

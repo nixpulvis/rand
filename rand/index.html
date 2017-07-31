@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#11-818' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#11-760' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities for random number generation</p>
 
 <p>The <code>Rng</code> trait covers random number generation, and can be used directly
@@ -269,7 +269,7 @@ steps it will indeed confirm that it is better to switch.</p>
              <span class="ident">keep_wins</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">total_keeps</span> <span class="kw">as</span> <span class="ident">f32</span>);
 }</pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Choose.html" title="trait rand::sequence::Choose">Choose</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Shuffle.html" title="trait rand::sequence::Shuffle">Shuffle</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Choose.html" title="trait rand::sequence::Choose">Choose</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="fn" href="../rand/sequence/fn.sample.html" title="fn rand::sequence::sample">sample</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Shuffle.html" title="trait rand::sequence::Shuffle">Shuffle</a>;</code></td></tr><tr><td><code>pub use iter::<a class="fn" href="../rand/iter/fn.iter.html" title="fn rand::iter::iter">iter</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="mod" href="dist/index.html"
@@ -358,11 +358,10 @@ the same stream of randomness multiple times.</p>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="fn" href="fn.sample.html"
-                                  title='fn rand::sample'>sample</a></td>
+                           <td><a class="fn" href="fn.random.html"
+                                  title='fn rand::random'>random</a></td>
                            <td class='docblock-short'>
-                                <p>Randomly sample up to <code>amount</code> elements from a finite iterator.
-The order of elements in the sample is not random.</p>
+                                <p>Generates a andom value using the thread-local random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

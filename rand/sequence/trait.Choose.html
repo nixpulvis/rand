@@ -50,12 +50,12 @@
                    </a>
                </span><a class='srclink' href='../../src/rand/sequence.rs.html#17-33' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Choose&lt;T&gt; {
-    fn <a href='#tymethod.choose' class='fnname'>choose</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(self, rng: &amp;mut R) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.choose' class='fnname'>choose</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(self, rng: &amp;mut R) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;;
 }</pre><div class='docblock'><p>This trait implements a <code>choose</code> operations on slices and sequences.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.choose' class='method'><span id='choose.v' class='invisible'><code>fn <a href='#tymethod.choose' class='fnname'>choose</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;(self, rng: &amp;mut R) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span></h3><div class='docblock'><p>Return one element from a sequence.</p>
+        <h3 id='tymethod.choose' class='method'><span id='choose.v' class='invisible'><code>fn <a href='#tymethod.choose' class='fnname'>choose</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(self, rng: &amp;mut R) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span></h3><div class='docblock'><p>Return one element from a sequence.</p>
 
 <p>Returns <code>None</code> only if the sequence is empty.</p>
 
