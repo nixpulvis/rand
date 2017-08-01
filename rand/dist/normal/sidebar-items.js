@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["standard_normal","Generates N(0, 1) random numbers (a.k.a.  a standard normal, or Gaussian)."]],"struct":[["LogNormal","The log-normal distribution `ln N(mean, std_dev**2)`."],["Normal","The normal distribution `N(mean, std_dev**2)`."]]});

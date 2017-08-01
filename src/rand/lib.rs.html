@@ -827,15 +827,6 @@
 <span id="782">782</span>
 <span id="783">783</span>
 <span id="784">784</span>
-<span id="785">785</span>
-<span id="786">786</span>
-<span id="787">787</span>
-<span id="788">788</span>
-<span id="789">789</span>
-<span id="790">790</span>
-<span id="791">791</span>
-<span id="792">792</span>
-<span id="793">793</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -915,21 +906,20 @@
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use rand::distributions::uniform;</span>
+<span class="doccomment">//! use rand::random;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let mut rng = rand::thread_rng();</span>
-<span class="doccomment">//! if uniform(&amp;mut rng) { // random bool</span>
-<span class="doccomment">//!     let a: i32 = uniform(&amp;mut rng);</span>
-<span class="doccomment">//!     let b: u32 = uniform(&amp;mut rng);</span>
+<span class="doccomment">//! if random() { // random bool</span>
+<span class="doccomment">//!     let a: i32 = random();</span>
+<span class="doccomment">//!     let b: u32 = random();</span>
 <span class="doccomment">//!     println!(&quot;i32: {}, u32: {}&quot;, a, b)</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use rand::thread_rng;</span>
-<span class="doccomment">//! use rand::distributions::{uniform, uniform01};</span>
+<span class="doccomment">//! use rand::distributions::{Rand, Uniform, Uniform01};</span>
 <span class="doccomment">//! let mut rng = thread_rng();</span>
-<span class="doccomment">//! let tuple: (f64, u8) = (uniform01(&amp;mut rng), uniform(&amp;mut rng));</span>
+<span class="doccomment">//! let tuple = (f64::rand(&amp;mut rng, Uniform01), u8::rand(&amp;mut rng, Uniform));</span>
 <span class="doccomment">//! println!(&quot;{:?}&quot;, tuple)</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -951,7 +941,7 @@
 <span class="doccomment">//! and multiply this fraction by 4.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use rand::distributions::{Distribution, Range};</span>
+<span class="doccomment">//! use rand::distributions::{Rand, Range};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn main() {</span>
 <span class="doccomment">//!    let between = Range::new(-1f64, 1.);</span>
@@ -961,8 +951,8 @@
 <span class="doccomment">//!    let mut in_circle = 0;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!    for _ in 0..total {</span>
-<span class="doccomment">//!        let a = between.sample(&amp;mut rng);</span>
-<span class="doccomment">//!        let b = between.sample(&amp;mut rng);</span>
+<span class="doccomment">//!        let a = f64::rand(&amp;mut rng, between);</span>
+<span class="doccomment">//!        let b = f64::rand(&amp;mut rng, between);</span>
 <span class="doccomment">//!        if a*a + b*b &lt;= 1. {</span>
 <span class="doccomment">//!            in_circle += 1;</span>
 <span class="doccomment">//!        }</span>
@@ -1262,15 +1252,14 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use rand::{Rng, SeedableRng};</span>
-    <span class="doccomment">/// use rand::prng::IsaacWordRng;</span>
-    <span class="doccomment">/// use rand::distributions::uniform01;</span>
+    <span class="doccomment">/// use rand::{Rng, SeedableRng, Rand, Default};</span>
+    <span class="doccomment">/// use rand::prng::ChaChaRng;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let seed: &amp;[_] = &amp;[1, 2, 3, 4];</span>
-    <span class="doccomment">/// let mut rng: IsaacWordRng = SeedableRng::from_seed(seed);</span>
-    <span class="doccomment">/// println!(&quot;{}&quot;, uniform01::&lt;f64, _&gt;(&amp;mut rng));</span>
+    <span class="doccomment">/// let mut rng: ChaChaRng = SeedableRng::from_seed(seed);</span>
+    <span class="doccomment">/// println!(&quot;{}&quot;, f64::rand(&amp;mut rng, Default));</span>
     <span class="doccomment">/// rng.reseed(&amp;[5, 6, 7, 8]);</span>
-    <span class="doccomment">/// println!(&quot;{}&quot;, uniform01::&lt;f64, _&gt;(&amp;mut rng));</span>
+    <span class="doccomment">/// println!(&quot;{}&quot;, f64::rand(&amp;mut rng, Default));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">Seed</span>);
 
@@ -1279,13 +1268,12 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use rand::{Rng, SeedableRng};</span>
+    <span class="doccomment">/// use rand::{Rng, SeedableRng, Rand, Default};</span>
     <span class="doccomment">/// use rand::prng::ChaChaRng;</span>
-    <span class="doccomment">/// use rand::distributions::uniform01;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let seed: &amp;[_] = &amp;[1, 2, 3, 4];</span>
     <span class="doccomment">/// let mut rng: ChaChaRng = SeedableRng::from_seed(seed);</span>
-    <span class="doccomment">/// println!(&quot;{}&quot;, uniform01::&lt;f64, _&gt;(&amp;mut rng));</span>
+    <span class="doccomment">/// println!(&quot;{}&quot;, f64::rand(&amp;mut rng, Default));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">from_seed</span>(<span class="ident">seed</span>: <span class="ident">Seed</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
 }
@@ -1477,7 +1465,7 @@
 <span class="doccomment">/// use rand::distributions::{Rand, Default, Uniform01, Closed01, Range};</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// // identical to calling `random()`:</span>
-<span class="doccomment">/// // FIXME let x: f64 = random_with(Default);</span>
+<span class="doccomment">/// let x: f64 = random_with(Default);</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// // same distribution, since Default uses Uniform01 for floats:</span>
 <span class="doccomment">/// let y: f64 = random_with(Uniform01);</span>
@@ -1585,26 +1573,20 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span> <span class="kw">as</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Rng</span>;
             <span class="ident">r</span>.<span class="ident">next_u32</span>();
             <span class="ident">uniform</span>::<span class="op">&lt;</span><span class="ident">i32</span>, _<span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>);
-            <span class="comment">// FIXME: dynamic dispatch?</span>
-            <span class="comment">/*
-            let mut v = [1, 1, 1];
-            v[..].shuffle(r);
-            let b: &amp;[_] = &amp;[1, 1, 1];
-            assert_eq!(v, b);
-            */</span>
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>];
+            <span class="ident">v</span>[..].<span class="ident">shuffle</span>(<span class="ident">r</span>);
+            <span class="kw">let</span> <span class="ident">b</span>: <span class="kw-2">&amp;</span>[_] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>];
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="ident">b</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">range</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>), <span class="number">0</span>);
         }
         {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">rng</span>) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Rng</span><span class="op">&gt;</span>;
             <span class="ident">r</span>.<span class="ident">next_u32</span>();
             <span class="ident">uniform</span>::<span class="op">&lt;</span><span class="ident">i32</span>, _<span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>);
-            <span class="comment">// FIXME: dynamic dispatch?</span>
-            <span class="comment">/*
-            let mut v = [1, 1, 1];
-            v[..].shuffle(r);
-            let b: &amp;[_] = &amp;[1, 1, 1];
-            assert_eq!(v, b);
-            */</span>
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>];
+            <span class="ident">v</span>[..].<span class="ident">shuffle</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="ident">r</span>);
+            <span class="kw">let</span> <span class="ident">b</span>: <span class="kw-2">&amp;</span>[_] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>];
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="ident">b</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">range</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>), <span class="number">0</span>);
         }
     }

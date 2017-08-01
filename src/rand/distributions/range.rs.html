@@ -329,6 +329,7 @@
 <span id="284">284</span>
 <span id="285">285</span>
 <span id="286">286</span>
+<span id="287">287</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -347,7 +348,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">num</span>::<span class="ident">Wrapping</span> <span class="kw">as</span> <span class="ident">w</span>;
 
 <span class="kw">use</span> <span class="ident">Rng</span>;
-<span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">uniform01</span>};
+<span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Uniform01</span>, <span class="ident">Rand</span>};
 
 <span class="doccomment">/// Generate a random value in the range [`low`, `high`).</span>
 <span class="doccomment">///</span>
@@ -509,7 +510,8 @@
                 }
             }
             <span class="kw">fn</span> <span class="ident">sample_range</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="ident">Range</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span><span class="op">&gt;</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-                <span class="ident">r</span>.<span class="ident">low</span> <span class="op">+</span> <span class="ident">r</span>.<span class="ident">range</span> <span class="op">*</span> <span class="ident">uniform01</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, _<span class="op">&gt;</span>(<span class="ident">rng</span>)
+                <span class="kw">let</span> <span class="ident">x</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> <span class="op">=</span> <span class="ident">Rand</span>::<span class="ident">rand</span>(<span class="ident">rng</span>, <span class="ident">Uniform01</span>);
+                <span class="ident">r</span>.<span class="ident">low</span> <span class="op">+</span> <span class="ident">r</span>.<span class="ident">range</span> <span class="op">*</span> <span class="ident">x</span>
             }
         }
     }

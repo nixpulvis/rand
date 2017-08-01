@@ -120,6 +120,16 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -135,7 +145,7 @@
 
 <span class="kw">use</span> <span class="ident">Rng</span>;
 <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Rand</span>};
-<span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">uniform</span>::{<span class="ident">Uniform</span>, <span class="comment">/*Uniform01,*/</span> <span class="ident">codepoint</span>};
+<span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">uniform</span>::{<span class="ident">Uniform</span>, <span class="ident">Uniform01</span>, <span class="ident">codepoint</span>};
 
 <span class="doccomment">/// A generic random value distribution. Generates values using what appears to</span>
 <span class="doccomment">/// be &quot;the best&quot; distribution for each type, but ultimately the choice is arbitrary.</span>
@@ -143,7 +153,7 @@
 <span class="doccomment">/// Makes use of the following distributions:</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// *   [`Uniform`] for integer types</span>
-<span class="doccomment">/// *   [`Uniform01`] for floating point types (FIXME)</span>
+<span class="doccomment">/// *   [`Uniform01`] for floating point types</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// Makes use of the following methods:</span>
 <span class="doccomment">/// </span>
@@ -167,6 +177,17 @@
 <span class="comment">//         T::rand(rng, Uniform01)</span>
 <span class="comment">//     }</span>
 <span class="comment">// }</span>
+<span class="comment">// workaround above issue:</span>
+<span class="kw">impl</span> <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">f32</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Default</span> {
+    <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">f32</span> {
+        <span class="ident">f32</span>::<span class="ident">rand</span>(<span class="ident">rng</span>, <span class="ident">Uniform01</span>)
+    }
+}
+<span class="kw">impl</span> <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Default</span> {
+    <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
+        <span class="ident">f64</span>::<span class="ident">rand</span>(<span class="ident">rng</span>, <span class="ident">Uniform01</span>)
+    }
+}
 
 <span class="kw">impl</span> <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Default</span> {
     <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">char</span> {
@@ -189,9 +210,8 @@
         
         <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="ident">rng</span>);
         <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">i8</span><span class="op">&gt;</span>(<span class="ident">rng</span>);
-        <span class="comment">// FIXME (see above)</span>
-        <span class="comment">// do_test::&lt;f32&gt;(rng);</span>
-        <span class="comment">// do_test::&lt;f64&gt;(rng);</span>
+        <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">f32</span><span class="op">&gt;</span>(<span class="ident">rng</span>);
+        <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>(<span class="ident">rng</span>);
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;i128_support&quot;</span>)]</span>
         <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>(<span class="ident">rng</span>);
         <span class="ident">do_test</span>::<span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span>(<span class="ident">rng</span>);

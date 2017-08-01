@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#660-662' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#657-659' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn random_with&lt;D, T:&nbsp;<a class="trait" href="../rand/distributions/trait.Rand.html" title="trait rand::distributions::Rand">Rand</a>&lt;D&gt;&gt;(distribution: D) -&gt; T</pre><div class='docblock'><p>Generates a random value using the thread-local random number generator.</p>
 
 <p>This is a more flexible variant of <code>random()</code>, supporting selection of the
@@ -59,7 +59,7 @@ distribution used. For example:</p>
 <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">Rand</span>, <span class="ident">Default</span>, <span class="ident">Uniform01</span>, <span class="ident">Closed01</span>, <span class="ident">Range</span>};
  
 <span class="comment">// identical to calling `random()`:</span>
-<span class="comment">// FIXME let x: f64 = random_with(Default);</span>
+<span class="kw">let</span> <span class="ident">x</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="ident">random_with</span>(<span class="ident">Default</span>);
  
 <span class="comment">// same distribution, since Default uses Uniform01 for floats:</span>
 <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="ident">random_with</span>(<span class="ident">Uniform01</span>);
