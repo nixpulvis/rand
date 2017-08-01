@@ -193,11 +193,11 @@
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use rand::{ReadRng, dist};</span>
+<span class="doccomment">/// use rand::{ReadRng, distributions};</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let data = vec![1, 2, 3, 4, 5, 6, 7, 8];</span>
 <span class="doccomment">/// let mut rng = ReadRng::new(&amp;data[..]);</span>
-<span class="doccomment">/// println!(&quot;{:x}&quot;, dist::uniform::&lt;u32, _&gt;(&amp;mut rng));</span>
+<span class="doccomment">/// println!(&quot;{:x}&quot;, distributions::uniform::&lt;u32, _&gt;(&amp;mut rng));</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReadRng</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {

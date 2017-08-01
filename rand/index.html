@@ -48,13 +48,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#11-760' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#11-793' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities for random number generation</p>
 
 <p>The <code>Rng</code> trait covers random number generation, and can be used directly
 to produce values of some core types (<code>u32, u64, f32, f64</code>, and byte
 strings). To generate anything else, or to generate values of the above type
-in generic code, use the <code>dist</code> (distributions) module. This includes
+in generic code, use the <code>distributions</code> module. This includes
 distributions like ranges, normal and exponential.</p>
 
 <h1 id='usage' class='section-header'><a href='#usage'>Usage</a></h1>
@@ -113,7 +113,7 @@ the CSPRNG has not seeded yet.)</li>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">dist</span>::<span class="ident">uniform</span>;
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::<span class="ident">uniform</span>;
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>();
 <span class="kw">if</span> <span class="ident">uniform</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>) { <span class="comment">// random bool</span>
@@ -124,7 +124,7 @@ the CSPRNG has not seeded yet.)</li>
 
 <pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>;
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">dist</span>::{<span class="ident">uniform</span>, <span class="ident">uniform01</span>};
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">uniform</span>, <span class="ident">uniform01</span>};
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">thread_rng</span>();
 <span class="kw">let</span> <span class="ident">tuple</span>: (<span class="ident">f64</span>, <span class="ident">u8</span>) <span class="op">=</span> (<span class="ident">uniform01</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>), <span class="ident">uniform</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>));
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">tuple</span>)</pre>
@@ -145,7 +145,7 @@ the square at random, calculate the fraction that fall within the circle,
 and multiply this fraction by 4.</p>
 
 <pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">dist</span>::{<span class="ident">Distribution</span>, <span class="ident">Range</span>};
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Range</span>};
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
    <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Range</span>::<span class="ident">new</span>(<span class="op">-</span><span class="number">1f64</span>, <span class="number">1.</span>);
@@ -186,7 +186,7 @@ steps it will indeed confirm that it is better to switch.</p>
 
 <pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">dist</span>::{<span class="ident">Distribution</span>, <span class="ident">Range</span>, <span class="ident">uniform</span>};
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Range</span>, <span class="ident">uniform</span>};
 
 <span class="kw">struct</span> <span class="ident">SimulationResult</span> {
     <span class="ident">win</span>: <span class="ident">bool</span>,
@@ -269,11 +269,11 @@ steps it will indeed confirm that it is better to switch.</p>
              <span class="ident">keep_wins</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">total_keeps</span> <span class="kw">as</span> <span class="ident">f32</span>);
 }</pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Choose.html" title="trait rand::sequence::Choose">Choose</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="fn" href="../rand/sequence/fn.sample.html" title="fn rand::sequence::sample">sample</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Shuffle.html" title="trait rand::sequence::Shuffle">Shuffle</a>;</code></td></tr><tr><td><code>pub use iter::<a class="fn" href="../rand/iter/fn.iter.html" title="fn rand::iter::iter">iter</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Choose.html" title="trait rand::sequence::Choose">Choose</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="fn" href="../rand/sequence/fn.sample.html" title="fn rand::sequence::sample">sample</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sequence/index.html">sequence</a>::<a class="trait" href="../rand/sequence/trait.Shuffle.html" title="trait rand::sequence::Shuffle">Shuffle</a>;</code></td></tr><tr><td><code>pub use iter::<a class="fn" href="../rand/iter/fn.iter.html" title="fn rand::iter::iter">iter</a>;</code></td></tr><tr><td><code>pub use distributions::<a class="trait" href="../rand/distributions/trait.Rand.html" title="trait rand::distributions::Rand">Rand</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="mod" href="dist/index.html"
-                                  title='mod rand::dist'>dist</a></td>
+                           <td><a class="mod" href="distributions/index.html"
+                                  title='mod rand::distributions'>distributions</a></td>
                            <td class='docblock-short'>
                                 <p>Sampling from random distributions.</p>
                            </td>
@@ -309,6 +309,14 @@ generates a certain number of random bytes.</p>
                            </td>
                        </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Default.html"
+                                  title='struct rand::Default'>Default</a></td>
+                           <td class='docblock-short'>
+                                <p>A generic random value distribution. Generates values using what appears to
+be &quot;the best&quot; distribution for each type, but ultimately the choice is arbitrary.</p>
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.OsRng.html"
                                   title='struct rand::OsRng'>OsRng</a></td>
@@ -361,7 +369,14 @@ the same stream of randomness multiple times.</p>
                            <td><a class="fn" href="fn.random.html"
                                   title='fn rand::random'>random</a></td>
                            <td class='docblock-short'>
-                                <p>Generates a andom value using the thread-local random number generator.</p>
+                                <p>Generates a random value using the thread-local random number generator.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.random_with.html"
+                                  title='fn rand::random_with'>random_with</a></td>
+                           <td class='docblock-short'>
+                                <p>Generates a random value using the thread-local random number generator.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

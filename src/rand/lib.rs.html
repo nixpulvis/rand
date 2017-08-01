@@ -803,6 +803,39 @@
 <span id="758">758</span>
 <span id="759">759</span>
 <span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -819,7 +852,7 @@
 <span class="doccomment">//! The `Rng` trait covers random number generation, and can be used directly</span>
 <span class="doccomment">//! to produce values of some core types (`u32, u64, f32, f64`, and byte</span>
 <span class="doccomment">//! strings). To generate anything else, or to generate values of the above type</span>
-<span class="doccomment">//! in generic code, use the `dist` (distributions) module. This includes</span>
+<span class="doccomment">//! in generic code, use the `distributions` module. This includes</span>
 <span class="doccomment">//! distributions like ranges, normal and exponential.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Usage</span>
@@ -882,7 +915,7 @@
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use rand::dist::uniform;</span>
+<span class="doccomment">//! use rand::distributions::uniform;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let mut rng = rand::thread_rng();</span>
 <span class="doccomment">//! if uniform(&amp;mut rng) { // random bool</span>
@@ -894,7 +927,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use rand::thread_rng;</span>
-<span class="doccomment">//! use rand::dist::{uniform, uniform01};</span>
+<span class="doccomment">//! use rand::distributions::{uniform, uniform01};</span>
 <span class="doccomment">//! let mut rng = thread_rng();</span>
 <span class="doccomment">//! let tuple: (f64, u8) = (uniform01(&amp;mut rng), uniform(&amp;mut rng));</span>
 <span class="doccomment">//! println!(&quot;{:?}&quot;, tuple)</span>
@@ -918,7 +951,7 @@
 <span class="doccomment">//! and multiply this fraction by 4.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use rand::dist::{Distribution, Range};</span>
+<span class="doccomment">//! use rand::distributions::{Distribution, Range};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn main() {</span>
 <span class="doccomment">//!    let between = Range::new(-1f64, 1.);</span>
@@ -961,7 +994,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! use rand::Rng;</span>
-<span class="doccomment">//! use rand::dist::{Distribution, Range, uniform};</span>
+<span class="doccomment">//! use rand::distributions::{Distribution, Range, uniform};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! struct SimulationResult {</span>
 <span class="doccomment">//!     win: bool,</span>
@@ -1063,12 +1096,12 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">OsRng</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sequence</span>::{<span class="ident">Choose</span>, <span class="ident">sample</span>, <span class="ident">Shuffle</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">iter</span>::<span class="ident">iter</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Default</span>, <span class="ident">Rand</span>};
 
 <span class="kw">use</span> <span class="ident">prng</span>::<span class="ident">IsaacWordRng</span>;
 <span class="kw">use</span> <span class="ident">prng</span>::<span class="ident">XorShiftRng</span>;
-<span class="kw">use</span> <span class="ident">dist</span>::{<span class="ident">Default</span>, <span class="ident">Rand</span>};
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dist</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">distributions</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prng</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">reseeding</span>;
@@ -1231,7 +1264,7 @@
     <span class="doccomment">/// ```rust</span>
     <span class="doccomment">/// use rand::{Rng, SeedableRng};</span>
     <span class="doccomment">/// use rand::prng::IsaacWordRng;</span>
-    <span class="doccomment">/// use rand::dist::uniform01;</span>
+    <span class="doccomment">/// use rand::distributions::uniform01;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let seed: &amp;[_] = &amp;[1, 2, 3, 4];</span>
     <span class="doccomment">/// let mut rng: IsaacWordRng = SeedableRng::from_seed(seed);</span>
@@ -1248,7 +1281,7 @@
     <span class="doccomment">/// ```rust</span>
     <span class="doccomment">/// use rand::{Rng, SeedableRng};</span>
     <span class="doccomment">/// use rand::prng::ChaChaRng;</span>
-    <span class="doccomment">/// use rand::dist::uniform01;</span>
+    <span class="doccomment">/// use rand::distributions::uniform01;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let seed: &amp;[_] = &amp;[1, 2, 3, 4];</span>
     <span class="doccomment">/// let mut rng: ChaChaRng = SeedableRng::from_seed(seed);</span>
@@ -1386,11 +1419,11 @@
     }
 }
 
-<span class="doccomment">/// Generates a andom value using the thread-local random number generator.</span>
+<span class="doccomment">/// Generates a random value using the thread-local random number generator.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// `random()` can generate various types of random things, and so may require</span>
 <span class="doccomment">/// type hinting to generate the specific type you want. It uses</span>
-<span class="doccomment">/// `dist::SampleDefault` to determine *how* values are generated for each type.</span>
+<span class="doccomment">/// `distributions::SampleDefault` to determine *how* values are generated for each type.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This function uses the thread local random number generator. This means</span>
 <span class="doccomment">/// that if you&#39;re calling `random()` in a loop, caching the generator can</span>
@@ -1410,7 +1443,7 @@
 <span class="doccomment">/// Caching the thread local random number generator:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use rand::dist::{Rand, Default};</span>
+<span class="doccomment">/// use rand::{Rand, Default};</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let mut v = vec![1, 2, 3];</span>
 <span class="doccomment">///</span>
@@ -1434,11 +1467,44 @@
     <span class="ident">T</span>::<span class="ident">rand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">thread_rng</span>(), <span class="ident">Default</span>)
 }
 
+<span class="doccomment">/// Generates a random value using the thread-local random number generator.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// This is a more flexible variant of `random()`, supporting selection of the</span>
+<span class="doccomment">/// distribution used. For example:</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use rand::random_with;</span>
+<span class="doccomment">/// use rand::distributions::{Rand, Default, Uniform01, Closed01, Range};</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// // identical to calling `random()`:</span>
+<span class="doccomment">/// // FIXME let x: f64 = random_with(Default);</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// // same distribution, since Default uses Uniform01 for floats:</span>
+<span class="doccomment">/// let y: f64 = random_with(Uniform01);</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// // use the closed range [0, 1] inseat of half-open [0, 1):</span>
+<span class="doccomment">/// let z: f64 = random_with(Closed01);</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// // use the half-open range [0, 2):</span>
+<span class="doccomment">/// let w: f64 = random_with(Range::new(0.0, 2.0));</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// // Note that constructing a `Range` is non-trivial, so for the last example</span>
+<span class="doccomment">/// // it might be better to do this if sampling a lot:</span>
+<span class="doccomment">/// let mut rng = rand::thread_rng();</span>
+<span class="doccomment">/// let range = Range::new(0.0, 2.0);</span>
+<span class="doccomment">/// // Do this bit many times:</span>
+<span class="doccomment">/// let v = f64::rand(&amp;mut rng, range);</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">inline</span>]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">random_with</span><span class="op">&lt;</span><span class="ident">D</span>, <span class="ident">T</span>: <span class="ident">Rand</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;&gt;</span>(<span class="ident">distribution</span>: <span class="ident">D</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
+    <span class="ident">T</span>::<span class="ident">rand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">thread_rng</span>(), <span class="ident">distribution</span>)
+}
+
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">SeedableRng</span>, <span class="ident">StdRng</span>, <span class="ident">Shuffle</span>, <span class="ident">iter</span>};
-    <span class="kw">use</span> <span class="ident">dist</span>::{<span class="ident">uniform</span>, <span class="ident">range</span>, <span class="ident">ascii_word_char</span>};
+    <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">uniform</span>, <span class="ident">range</span>, <span class="ident">ascii_word_char</span>};
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
 
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MyRng</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> { <span class="ident">inner</span>: <span class="ident">R</span> }

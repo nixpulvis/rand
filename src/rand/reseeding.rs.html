@@ -381,7 +381,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
 <span class="doccomment">/// use rand::{Rng, SeedableRng, StdRng, iter};</span>
-<span class="doccomment">/// use rand::dist::ascii_word_char;</span>
+<span class="doccomment">/// use rand::distributions::ascii_word_char;</span>
 <span class="doccomment">/// use rand::reseeding::{Reseeder, ReseedingRng};</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// struct TickTockReseeder { tick: bool }</span>
@@ -428,7 +428,7 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
     <span class="kw">use</span> {<span class="ident">SeedableRng</span>, <span class="ident">Rng</span>, <span class="ident">iter</span>};
-    <span class="kw">use</span> <span class="ident">dist</span>::<span class="ident">ascii_word_char</span>;
+    <span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">ascii_word_char</span>;
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ReseedingRng</span>, <span class="ident">ReseedWithDefault</span>};
 
     <span class="kw">struct</span> <span class="ident">Counter</span> {

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Default","A generic random value distribution. Generates values using what appears to be \"the best\" distribution for each type, but ultimately the choice is arbitrary."]]});

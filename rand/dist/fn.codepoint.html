@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `default` mod in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, default">
+    <meta name="description" content="API documentation for the Rust `codepoint` fn in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, codepoint">
 
-    <title>rand::dist::default - Rust</title>
+    <title>rand::dist::codepoint - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
     
 
     <link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico">
     
 </head>
-<body class="rustdoc mod">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,8 @@
     
 
     <nav class="sidebar">
-        <a href='../../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Module default</p><div class="block items"><ul><li><a href="#structs">Structs</a></li></ul></div><p class='location'><a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a></p><script>window.sidebarCurrent = {name: 'default', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
+        <p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>dist</a></p><script>window.sidebarCurrent = {name: 'codepoint', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,22 +44,16 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a>::<wbr><a class="mod" href=''>default</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>rand</a>::<wbr><a href='index.html'>dist</a>::<wbr><a class="fn" href=''>codepoint</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rand/dist/default.rs.html#11-77' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Generic value creation</p>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Default.html"
-                                  title='struct rand::dist::default::Default'>Default</a></td>
-                           <td class='docblock-short'>
-                                <p>A generic random value distribution. Generates values using what appears to
-be &quot;the best&quot; distribution for each type, but ultimately the choice is arbitrary.</p>
-                           </td>
-                       </tr></table></section>
+               </span><a class='srclink' href='../../src/rand/dist/uniform.rs.html#58-70' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn codepoint&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a></pre><div class='docblock'><p>Sample a <code>char</code>, uniformly distributed over all Unicode scalar values,
+i.e. all code points in the range <code>0...0x10_FFFF</code>, except for the range
+<code>0xD800...0xDFFF</code> (the surrogate code points).  This includes
+unassigned/reserved code points.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -113,10 +107,10 @@ be &quot;the best&quot; distribution for each type, but ultimately the choice is
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../";
         window.currentCrate = "rand";
     </script>
-    <script src="../../../main.js"></script>
-    <script defer src="../../../search-index.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

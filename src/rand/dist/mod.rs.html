@@ -196,6 +196,7 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
+<span id="154">154</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -226,14 +227,15 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">gamma</span>::{<span class="ident">Gamma</span>, <span class="ident">ChiSquared</span>, <span class="ident">FisherF</span>, <span class="ident">StudentT</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">normal</span>::{<span class="ident">Normal</span>, <span class="ident">LogNormal</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">exponential</span>::<span class="ident">Exp</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">weighted</span>::{<span class="ident">Weighted</span>, <span class="ident">WeightedChoice</span>};
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">default</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">uniform</span>;
+<span class="kw">mod</span> <span class="ident">default</span>;
+<span class="kw">mod</span> <span class="ident">uniform</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gamma</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">normal</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exponential</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">weighted</span>;
+<span class="kw">mod</span> <span class="ident">weighted</span>;
 
 <span class="doccomment">/// Return a bool with a 1 in n chance of being true</span>
 <span class="doccomment">/// </span>

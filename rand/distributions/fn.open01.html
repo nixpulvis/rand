@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `weighted` mod in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, weighted">
+    <meta name="description" content="API documentation for the Rust `open01` fn in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, open01">
 
-    <title>rand::dist::weighted - Rust</title>
+    <title>rand::distributions::open01 - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
     
 
     <link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico">
     
 </head>
-<body class="rustdoc mod">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,8 +28,8 @@
     
 
     <nav class="sidebar">
-        <a href='../../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Module weighted</p><div class="block items"><ul><li><a href="#structs">Structs</a></li></ul></div><p class='location'><a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a></p><script>window.sidebarCurrent = {name: 'weighted', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
+        <p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a></p><script>window.sidebarCurrent = {name: 'open01', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,31 +44,16 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>rand</a>::<wbr><a href='../index.html'>dist</a>::<wbr><a class="mod" href=''>weighted</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a>::<wbr><a class="fn" href=''>open01</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rand/dist/weighted.rs.html#11-251' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>Weighted choices</p>
+               </span><a class='srclink' href='../../src/rand/distributions/uniform.rs.html#41-43' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn open01&lt;T:&nbsp;<a class="trait" href="../../rand/distributions/trait.Rand.html" title="trait rand::distributions::Rand">Rand</a>&lt;<a class="struct" href="../../rand/distributions/struct.Open01.html" title="struct rand::distributions::Open01">Open01</a>&gt;, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R) -&gt; T</pre><div class='docblock'><p>Sample values uniformly over the open range (0, 1)</p>
 
-<p>TODO: evaluate whether this functionality should be stabilised as-is,
-adapted, or removed entirely.</p>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.Weighted.html"
-                                  title='struct rand::dist::weighted::Weighted'>Weighted</a></td>
-                           <td class='docblock-short'>
-                                <p>A value with a particular weight for use with <code>WeightedChoice</code>.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.WeightedChoice.html"
-                                  title='struct rand::dist::weighted::WeightedChoice'>WeightedChoice</a></td>
-                           <td class='docblock-short'>
-                                <p>A distribution that selects from a finite collection of weighted items.</p>
-                           </td>
-                       </tr></table></section>
+<p>This method has precisely two template parameters. To fix the output type,
+use the syntax <code>open01::&lt;f64, _&gt;(rng)</code>.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -122,10 +107,10 @@ adapted, or removed entirely.</p>
     
 
     <script>
-        window.rootPath = "../../../";
+        window.rootPath = "../../";
         window.currentCrate = "rand";
     </script>
-    <script src="../../../main.js"></script>
-    <script defer src="../../../search-index.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>
