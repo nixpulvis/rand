@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `sequence` mod in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, sequence">
+    <meta name="description" content="API documentation for the Rust `sequences` mod in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, sequences">
 
-    <title>rand::sequence - Rust</title>
+    <title>rand::sequences - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Module sequence</p><div class="block items"><ul><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'sequence', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module sequences</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'sequences', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,24 +44,39 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rand</a>::<wbr><a class="mod" href=''>sequence</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rand</a>::<wbr><a class="mod" href=''>sequences</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/sequence.rs.html#11-198' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/sequences/mod.rs.html#11-206' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Random operations on sequences</p>
-</div><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Weighted.html"
+                                  title='struct rand::sequences::Weighted'>Weighted</a></td>
+                           <td class='docblock-short'>
+                                <p>A value with a particular weight for use with <code>WeightedChoice</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.WeightedChoice.html"
+                                  title='struct rand::sequences::WeightedChoice'>WeightedChoice</a></td>
+                           <td class='docblock-short'>
+                                <p>A distribution that selects from a finite collection of weighted items.</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="trait" href="trait.Choose.html"
-                                  title='trait rand::sequence::Choose'>Choose</a></td>
+                                  title='trait rand::sequences::Choose'>Choose</a></td>
                            <td class='docblock-short'>
                                 <p>This trait implements a <code>choose</code> operations on slices and sequences.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="trait" href="trait.Shuffle.html"
-                                  title='trait rand::sequence::Shuffle'>Shuffle</a></td>
+                                  title='trait rand::sequences::Shuffle'>Shuffle</a></td>
                            <td class='docblock-short'>
                                 <p>This trait introduces a <code>shuffle</code> operations on slices.</p>
                            </td>
@@ -69,7 +84,7 @@
 <table>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.sample.html"
-                                  title='fn rand::sequence::sample'>sample</a></td>
+                                  title='fn rand::sequences::sample'>sample</a></td>
                            <td class='docblock-short'>
                                 <p>Randomly sample up to <code>amount</code> elements from a finite iterator.
 The order of elements in the sample is not random.</p>

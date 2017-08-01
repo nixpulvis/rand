@@ -827,6 +827,7 @@
 <span id="782">782</span>
 <span id="783">783</span>
 <span id="784">784</span>
+<span id="785">785</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -985,6 +986,7 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! use rand::Rng;</span>
 <span class="doccomment">//! use rand::distributions::{Distribution, Range, uniform};</span>
+<span class="doccomment">//! use rand::sequences::Choose;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! struct SimulationResult {</span>
 <span class="doccomment">//!     win: bool,</span>
@@ -1015,7 +1017,7 @@
 <span class="doccomment">//! // where the car is. The game host will never open the door with the car.</span>
 <span class="doccomment">//! fn game_host_open&lt;R: Rng&gt;(car: u32, choice: u32, rng: &amp;mut R) -&gt; u32 {</span>
 <span class="doccomment">//!     let choices = free_doors(&amp;[car, choice]);</span>
-<span class="doccomment">//!     rand::sample(rng, choices.into_iter(), 1)[0]</span>
+<span class="doccomment">//!     *choices[..].choose(rng).unwrap()</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Returns the door we switch to, given our current choice and</span>
@@ -1084,7 +1086,6 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">read</span>::<span class="ident">ReadRng</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">OsRng</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sequence</span>::{<span class="ident">Choose</span>, <span class="ident">sample</span>, <span class="ident">Shuffle</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">iter</span>::<span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Default</span>, <span class="ident">Rand</span>};
 
@@ -1095,7 +1096,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prng</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">reseeding</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sequence</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sequences</span>;
 
 <span class="kw">mod</span> <span class="ident">read</span>;
 <span class="kw">mod</span> <span class="ident">os</span>;
@@ -1491,8 +1492,9 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">SeedableRng</span>, <span class="ident">StdRng</span>, <span class="ident">Shuffle</span>, <span class="ident">iter</span>};
+    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">SeedableRng</span>, <span class="ident">StdRng</span>, <span class="ident">iter</span>};
     <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">uniform</span>, <span class="ident">range</span>, <span class="ident">ascii_word_char</span>};
+    <span class="kw">use</span> <span class="ident">sequences</span>::<span class="ident">Shuffle</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
 
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MyRng</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> { <span class="ident">inner</span>: <span class="ident">R</span> }

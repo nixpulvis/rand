@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/sequence.rs`.">
+    <meta name="description" content="Source to the Rust file `src/sequences/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
-    <title>sequence.rs.html -- source</title>
+    <title>mod.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
     
 
     <link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico">
@@ -28,7 +28,7 @@
     
 
     <nav class="sidebar">
-        <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
+        <a href='../../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
         
     </nav>
 
@@ -241,6 +241,14 @@
 <span id="196">196</span>
 <span id="197">197</span>
 <span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -257,6 +265,10 @@
 <span class="kw">use</span> <span class="ident">Rng</span>;
 <span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">range</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">weighted</span>::{<span class="ident">Weighted</span>, <span class="ident">WeightedChoice</span>};
+
+<span class="kw">mod</span> <span class="ident">weighted</span>;
+
 <span class="doccomment">/// This trait implements a `choose` operations on slices and sequences.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Choose</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Return one element from a sequence.</span>
@@ -266,7 +278,8 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use rand::{thread_rng, Choose};</span>
+    <span class="doccomment">/// use rand::thread_rng;</span>
+    <span class="doccomment">/// use rand::sequences::Choose;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let choices = [1, 2, 4, 8, 16, 32];</span>
     <span class="doccomment">/// let mut rng = thread_rng();</span>
@@ -314,7 +327,8 @@
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```rust</span>
-<span class="doccomment">/// use rand::{thread_rng, sample};</span>
+<span class="doccomment">/// use rand::thread_rng;</span>
+<span class="doccomment">/// use rand::sequences::sample;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let mut rng = thread_rng();</span>
 <span class="doccomment">/// let sample = sample(&amp;mut rng, 1..100, 5);</span>
@@ -348,7 +362,8 @@
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use rand::{thread_rng, Shuffle};</span>
+    <span class="doccomment">/// use rand::thread_rng;</span>
+    <span class="doccomment">/// use rand::sequences::Shuffle;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let mut rng = thread_rng();</span>
     <span class="doccomment">/// let mut y = [1, 2, 3];</span>
@@ -380,7 +395,8 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">Choose</span>, <span class="ident">sample</span>, <span class="ident">Shuffle</span>};
+    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>};
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Choose</span>, <span class="ident">sample</span>, <span class="ident">Shuffle</span>};
     
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_choose</span>() {
@@ -495,10 +511,10 @@
     
 
     <script>
-        window.rootPath = "../../";
+        window.rootPath = "../../../";
         window.currentCrate = "rand";
     </script>
-    <script src="../../main.js"></script>
-    <script defer src="../../search-index.js"></script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>
