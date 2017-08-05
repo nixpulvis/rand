@@ -204,6 +204,10 @@
 <span id="159">159</span>
 <span id="160">160</span>
 <span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -235,6 +239,10 @@
 
 <span class="doccomment">/// Create an iterator on an `Rng`.</span>
 <span class="doccomment">/// </span>
+<span class="doccomment">/// This does not create a &quot;real&quot; `Iterator` due to lifetime restrictions, but</span>
+<span class="doccomment">/// the returned object supports the most important iterator functions, like</span>
+<span class="doccomment">/// `take(number)` and `map(closure)`.</span>
+<span class="doccomment">/// </span>
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
@@ -249,7 +257,7 @@
 <span class="doccomment">/// println!(&quot;{}&quot;, w);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">+</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span><span class="op">&gt;</span> {
-    <span class="ident">Iter</span> { <span class="ident">rng</span>: <span class="ident">rng</span>, <span class="ident">len</span>: <span class="prelude-val">None</span> }
+    <span class="ident">Iter</span> { <span class="ident">rng</span>, <span class="ident">len</span>: <span class="prelude-val">None</span> }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">+</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span><span class="op">&gt;</span> {

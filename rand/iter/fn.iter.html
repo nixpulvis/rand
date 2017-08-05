@@ -48,8 +48,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/iter.rs.html#44-46' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/iter.rs.html#48-50' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn iter&lt;'a, R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'a&gt;(rng: &amp;'a mut R) -&gt; <a class="struct" href="../../rand/iter/struct.Iter.html" title="struct rand::iter::Iter">Iter</a>&lt;'a, R&gt;</pre><div class='docblock'><p>Create an iterator on an <code>Rng</code>.</p>
+
+<p>This does not create a &quot;real&quot; <code>Iterator</code> due to lifetime restrictions, but
+the returned object supports the most important iterator functions, like
+<code>take(number)</code> and <code>map(closure)</code>.</p>
 
 <h1 id='example' class='section-header'><a href='#example'>Example</a></h1>
 <pre class="rust rust-example-rendered">
