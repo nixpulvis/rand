@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Rand` trait in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Rand">
+    <meta name="description" content="API documentation for the Rust `SimpleRand` trait in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SimpleRand">
 
-    <title>rand::distributions::Rand - Rust</title>
+    <title>rand::distributions::SimpleRand - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Rand</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a></p><script>window.sidebarCurrent = {name: 'Rand', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait SimpleRand</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a></p><script>window.sidebarCurrent = {name: 'SimpleRand', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,37 +44,35 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a>::<wbr><a class="trait" href=''>Rand</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rand</a>::<wbr><a href='index.html'>distributions</a>::<wbr><a class="trait" href=''>SimpleRand</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/distributions/mod.rs.html#85-93' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait Rand&lt;D&gt; {
-    fn <a href='#tymethod.rand' class='fnname'>rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R, distr: D) -&gt; Self;
-}</pre><div class='docblock'><p>Generic trait for sampling random values from some distribution</p>
+               </span><a class='srclink' href='../../src/rand/distributions/mod.rs.html#113-117' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait SimpleRand {
+    fn <a href='#tymethod.simple_rand' class='fnname'>simple_rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R) -&gt; Self;
+}</pre><div class='docblock'><p>Simpler version of <code>Rand</code>, without support for alternative distributions.</p>
+
+<p>TODO: decide which version of <code>Rand</code> to keep. If this one, rename struct to
+<code>Rand</code> and function to <code>rand</code>.</p>
 
 <h1 id='example' class='section-header'><a href='#example'>Example</a></h1>
 <pre class="rust rust-example-rendered">
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">Rand</span>, <span class="ident">Default</span>, <span class="ident">Range</span>};
+<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::<span class="ident">SimpleRand</span>;
  
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>();
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Random byte: {}&quot;</span>, <span class="ident">u8</span>::<span class="ident">rand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>, <span class="ident">Default</span>));
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Random range: {}&quot;</span>, <span class="ident">i32</span>::<span class="ident">rand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>, <span class="ident">Range</span>::<span class="ident">new</span>(<span class="op">-</span><span class="number">99</span>, <span class="number">100</span>)));</pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Random byte: {}&quot;</span>, <span class="ident">u8</span>::<span class="ident">simple_rand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>));</pre>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.rand' class='method'><span id='rand.v' class='invisible'><code>fn <a href='#tymethod.rand' class='fnname'>rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R, distr: D) -&gt; Self</code></span></h3><div class='docblock'><p>Generate a random value of the given type, according to the specified
+        <h3 id='tymethod.simple_rand' class='method'><span id='simple_rand.v' class='invisible'><code>fn <a href='#tymethod.simple_rand' class='fnname'>simple_rand</a>&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R) -&gt; Self</code></span></h3><div class='docblock'><p>Generate a random value of the given type, using the <code>Default</code>
 distribution.</p>
-
-<p>The distributions <code>Default</code> (or <code>Uniform</code> and <code>Uniform01</code>) and <code>Range</code>
-should cover most simpler usages; <code>Normal</code>, <code>LogNormal</code>, <code>Exp</code>, <code>Gamma</code>
-and a few others are also available.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl&lt;T, D:&nbsp;<a class="trait" href="../../rand/distributions/trait.Distribution.html" title="trait rand::distributions::Distribution">Distribution</a>&lt;T&gt;&gt; Rand&lt;D&gt; for T</code></li>
+    <li><code>impl&lt;T&gt; SimpleRand for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;<a class="struct" href="../../rand/struct.Default.html" title="struct rand::Default">Default</a>: <a class="trait" href="../../rand/distributions/trait.Distribution.html" title="trait rand::distributions::Distribution">Distribution</a>&lt;T&gt;,&nbsp;</span></code></li>
 </ul><script type="text/javascript" async
-                         src="../../implementors/rand/distributions/trait.Rand.js">
+                         src="../../implementors/rand/distributions/trait.SimpleRand.js">
                  </script></section>
     <section id='search' class="content hidden"></section>
 

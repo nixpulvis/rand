@@ -403,6 +403,10 @@
 <span id="358">358</span>
 <span id="359">359</span>
 <span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -427,7 +431,7 @@
 <span class="doccomment">//! etc. (or just `RangeI32`, etc.) types, each implementing `Distribution`,</span>
 <span class="doccomment">//! but it adds some magic to support generic `range` and `new_range` methods.</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">num</span>::<span class="ident">Wrapping</span> <span class="kw">as</span> <span class="ident">w</span>;
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">num</span>::<span class="ident">Wrapping</span> <span class="kw">as</span> <span class="ident">w</span>;
 
 <span class="kw">use</span> <span class="ident">Rng</span>;
 <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Distribution</span>, <span class="ident">Uniform01</span>, <span class="ident">Rand</span>};
@@ -559,16 +563,23 @@
             
             <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">low</span>: <span class="self">Self</span>::<span class="ident">X</span>, <span class="ident">high</span>: <span class="self">Self</span>::<span class="ident">X</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> (<span class="ident">w</span>(<span class="ident">high</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span>) <span class="op">-</span> <span class="ident">w</span>(<span class="ident">low</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span>)).<span class="number">0</span>;
-                <span class="kw">let</span> <span class="ident">unsigned_max</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span> <span class="op">=</span> ::<span class="ident">std</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span>::<span class="ident">MAX</span>;
+                <span class="kw">let</span> <span class="ident">unsigned_max</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span> <span class="op">=</span> ::<span class="ident">core</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span>::<span class="ident">MAX</span>;
 
-                <span class="comment">// this is the largest number that fits into $unsigned</span>
-                <span class="comment">// that `range` divides evenly, so, if we&#39;ve sampled</span>
-                <span class="comment">// `n` uniformly from this region, then `n % range` is</span>
-                <span class="comment">// uniform in [0, range)</span>
-                <span class="kw">let</span> <span class="ident">zone</span> <span class="op">=</span> <span class="ident">unsigned_max</span> <span class="op">-</span> <span class="ident">unsigned_max</span> <span class="op">%</span> <span class="ident">range</span>;
+                <span class="comment">// We want to calculate type_range % range where type_range is</span>
+                <span class="comment">// pow(2, n_bits($ty)), but we can&#39;t represent type_range.</span>
+                <span class="comment">// (type_range - range) % range is equivalent, since we know</span>
+                <span class="comment">// type_range &gt; range. Since range &gt;= 1,</span>
+                <span class="comment">// type_range - range = (unsigned_max - range) + 1.</span>
+                <span class="kw">let</span> <span class="ident">ignore_zone</span> <span class="op">=</span> ((<span class="ident">unsigned_max</span> <span class="op">-</span> <span class="ident">range</span>) <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">range</span>;
+                <span class="comment">// We want to sample from the zone</span>
+                <span class="comment">// [0, (type_range - ignore_zone))</span>
+                <span class="comment">// however, ignore_zone may be zero. Instead use a closed range</span>
+                <span class="comment">// from zero to:</span>
+                <span class="kw">let</span> <span class="ident">zone</span> <span class="op">=</span> <span class="ident">unsigned_max</span> <span class="op">-</span> <span class="ident">ignore_zone</span>;
 
                 <span class="ident">RangeInt</span> {
                     <span class="ident">low</span>: <span class="ident">low</span>,
+                    <span class="comment">// These are really $unsigned values, but store as $ty:</span>
                     <span class="ident">range</span>: <span class="ident">range</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>,
                     <span class="ident">zone</span>: <span class="ident">zone</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>
                 }
@@ -577,13 +588,10 @@
             <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">X</span> {
                 <span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">distributions</span>::<span class="ident">uniform</span>;
                 <span class="kw">loop</span> {
-                    <span class="comment">// rejection sample</span>
                     <span class="kw">let</span> <span class="ident">v</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span> <span class="op">=</span> <span class="ident">uniform</span>(<span class="ident">rng</span>);
-                    <span class="comment">// until we find something that fits into the</span>
-                    <span class="comment">// region which self.range evenly divides (this will</span>
-                    <span class="comment">// be uniformly distributed)</span>
-                    <span class="kw">if</span> <span class="ident">v</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">zone</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span> {
-                        <span class="comment">// and return it, with some adjustments</span>
+                    <span class="comment">// Reject samples not between 0 and zone:</span>
+                    <span class="kw">if</span> <span class="ident">v</span> <span class="op">&lt;=</span> <span class="self">self</span>.<span class="ident">zone</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span> {
+                        <span class="comment">// Adjustment sample for range and low value:</span>
                         <span class="kw">return</span> (<span class="ident">w</span>(<span class="self">self</span>.<span class="ident">low</span>) <span class="op">+</span> <span class="ident">w</span>((<span class="ident">v</span> <span class="op">%</span> <span class="self">self</span>.<span class="ident">range</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">unsigned</span>) <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>)).<span class="number">0</span>;
                     }
                 }

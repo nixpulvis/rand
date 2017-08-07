@@ -48,13 +48,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/distributions/mod.rs.html#11-152' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/distributions/mod.rs.html#11-202' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Sampling from random distributions.</p>
 
 <p>A distribution may have internal state describing the distribution of
 generated values; for example <code>Range</code> needs to know its upper and lower
 bounds. Distributions use the <code>Distribution</code> trait to yield values: call
-<code>dist.sample(&amp;mut rng)</code> to get a random variable.</p>
+<code>distr.sample(&amp;mut rng)</code> to get a random variable.</p>
 
 <p>TODO: is it worth exposing both submodules and re-exporting their members?</p>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
@@ -145,6 +145,13 @@ be &quot;the best&quot; distribution for each type, but ultimately the choice is
                                   title='trait rand::distributions::Rand'>Rand</a></td>
                            <td class='docblock-short'>
                                 <p>Generic trait for sampling random values from some distribution</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.SimpleRand.html"
+                                  title='trait rand::distributions::SimpleRand'>SimpleRand</a></td>
+                           <td class='docblock-short'>
+                                <p>Simpler version of <code>Rand</code>, without support for alternative distributions.</p>
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
