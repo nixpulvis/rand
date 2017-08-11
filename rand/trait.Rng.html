@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#286-373' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#284-371' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Rng {
     fn <a href='#tymethod.next_u32' class='fnname'>next_u32</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>;
 
@@ -109,12 +109,12 @@ source of randomness).</p>
 <li><code>impl Rng for <a class="struct" href="../rand/prng/struct.Isaac64Rng.html" title="struct rand::prng::Isaac64Rng">Isaac64Rng</a></code></li>
 <li><code>impl Rng for <a class="struct" href="../rand/prng/struct.XorShiftRng.html" title="struct rand::prng::XorShiftRng">XorShiftRng</a></code></li>
 <li><code>impl&lt;R:&nbsp;<a class="trait" href="../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>, Rsdr:&nbsp;<a class="trait" href="../rand/reseeding/trait.Reseeder.html" title="trait rand::reseeding::Reseeder">Reseeder</a>&lt;R&gt;&gt; Rng for <a class="struct" href="../rand/reseeding/struct.ReseedingRng.html" title="struct rand::reseeding::ReseedingRng">ReseedingRng</a>&lt;R, Rsdr&gt;</code></li>
-<li><code>impl&lt;R:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>&gt; Rng for <a class="struct" href="../rand/struct.ReadRng.html" title="struct rand::ReadRng">ReadRng</a>&lt;R&gt;</code></li>
 <li><code>impl Rng for <a class="struct" href="../rand/struct.OsRng.html" title="struct rand::OsRng">OsRng</a></code></li>
+<li><code>impl&lt;R:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>&gt; Rng for <a class="struct" href="../rand/struct.ReadRng.html" title="struct rand::ReadRng">ReadRng</a>&lt;R&gt;</code></li>
+<li><code>impl Rng for <a class="struct" href="../rand/struct.ThreadRng.html" title="struct rand::ThreadRng">ThreadRng</a></code></li>
 <li><code>impl&lt;'a, R:&nbsp;?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Rng for &amp;'a mut R <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>,&nbsp;</span></code></li>
 <li><code>impl&lt;R:&nbsp;?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Rng for <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;R&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>,&nbsp;</span></code></li>
 <li><code>impl Rng for <a class="struct" href="../rand/struct.StdRng.html" title="struct rand::StdRng">StdRng</a></code></li>
-<li><code>impl Rng for <a class="struct" href="../rand/struct.ThreadRng.html" title="struct rand::ThreadRng">ThreadRng</a></code></li>
 </ul><script type="text/javascript" async
                          src="../implementors/rand/trait.Rng.js">
                  </script></section>
