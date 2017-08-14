@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `weak_rng` fn in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, weak_rng">
+    <meta name="description" content="API documentation for the Rust `set_thread_rng` fn in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, set_thread_rng">
 
-    <title>rand::weak_rng - Rust</title>
+    <title>rand::set_thread_rng - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'><a href='index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'weak_rng', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'set_thread_rng', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,20 +44,38 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rand</a>::<wbr><a class="fn" href=''>weak_rng</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rand</a>::<wbr><a class="fn" href=''>set_thread_rng</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#555-561' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn weak_rng() -&gt; <a class="struct" href="../rand/prng/struct.XorShiftRng.html" title="struct rand::prng::XorShiftRng">XorShiftRng</a></pre><div class='docblock'><p>Create a weak random number generator with a default algorithm and seed.</p>
+               </span><a class='srclink' href='../src/rand/thread_local.rs.html#132-134' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn set_thread_rng(rng: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;)</pre><div class='docblock'><p>Set the thread-local RNG used by <code>thread_rng</code>. Only affects the current
+thread. See also <code>set_new_thread_rng</code>.</p>
 
-<p>It returns the fastest <code>Rng</code> algorithm currently available in Rust without
-consideration for cryptography or security. If you require a specifically
-seeded <code>Rng</code> for consistency over time you should pick one algorithm and
-create the <code>Rng</code> yourself.</p>
+<p>If this is never called in a thread and <code>set_new_thread_rng</code> is never called
+globally, the first call to <code>thread_rng()</code> in the thread will create a new
+<code>OsRng</code> and use that as a source of numbers.
+This method allows a different generator to be set, and can be called at
+any time to set a new generator.</p>
 
-<p>This will read randomness from the operating system to seed the
-generator.</p>
+<p>Calling this affects all users of <code>thread_rng</code>, <code>random</code> and <code>random_with</code>
+in the current thread, including libraries. Users should ensure the
+generator used is secure enough for all users of <code>thread_rng</code>, including
+other libraries.</p>
+
+<p>This may have some use in testing, by spawning a new thread, overriding the
+generator with known values (a constant or a PRNG with known seed), then
+asserting the exact output of &quot;randomly&quot; generated values. The use of a new
+thread avoids affecting other users of <code>thread_rng</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rand</span>::{<span class="ident">ConstRng</span>, <span class="ident">random</span>, <span class="ident">set_thread_rng</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
+ 
+<span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+    <span class="ident">set_thread_rng</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">ConstRng</span>::<span class="ident">new</span>(<span class="number">123u32</span>)));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">random</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(), <span class="number">123u32</span>);
+});</pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 

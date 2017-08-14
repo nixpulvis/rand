@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `weak_rng` fn in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, weak_rng">
+    <meta name="description" content="API documentation for the Rust `set_new_thread_rng` fn in crate `rand`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, set_new_thread_rng">
 
-    <title>rand::weak_rng - Rust</title>
+    <title>rand::set_new_thread_rng - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../rand/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'><a href='index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'weak_rng', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'set_new_thread_rng', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,20 +44,26 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rand</a>::<wbr><a class="fn" href=''>weak_rng</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rand</a>::<wbr><a class="fn" href=''>set_new_thread_rng</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#555-561' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn weak_rng() -&gt; <a class="struct" href="../rand/prng/struct.XorShiftRng.html" title="struct rand::prng::XorShiftRng">XorShiftRng</a></pre><div class='docblock'><p>Create a weak random number generator with a default algorithm and seed.</p>
+               </span><a class='srclink' href='../src/rand/thread_local.rs.html#151-156' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn set_new_thread_rng(creator: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Fn.html" title="trait core::ops::Fn">Fn</a>() -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="../rand/trait.Rng.html" title="trait rand::Rng">Rng</a>&gt;&gt;)</pre><div class='docblock'><p>Control how thread-local generators are created for new threads.</p>
 
-<p>It returns the fastest <code>Rng</code> algorithm currently available in Rust without
-consideration for cryptography or security. If you require a specifically
-seeded <code>Rng</code> for consistency over time you should pick one algorithm and
-create the <code>Rng</code> yourself.</p>
+<p>The first time <code>thread_rng()</code> is called in each thread, this closure is
+used to create a new generator. If this closure has not been set, the
+built-in closure returning a new boxed <code>OsRng</code> is used.</p>
 
-<p>This will read randomness from the operating system to seed the
-generator.</p>
+<p>Calling this affects all users of <code>thread_rng</code>, <code>random</code> and <code>random_with</code>
+in all new threads (as well as existing threads which haven&#39;t called
+<code>thread_rng</code> yet), including libraries. Users should ensure the generator
+used is secure enough for all users of <code>thread_rng</code>, including other
+libraries.</p>
+
+<p>This closure should not panic; doing so would kill whichever thread is
+calling <code>thread_rng</code> at the time, poison its mutex, and cause all future
+threads initialising a <code>thread_rng</code> (or calling this function) to panic.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

@@ -274,6 +274,9 @@
 <span id="229">229</span>
 <span id="230">230</span>
 <span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -289,6 +292,7 @@
 <span class="doccomment">//! generates a certain number of random bytes.</span>
 
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
 
 <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">SeedableRng</span>};
 
@@ -299,7 +303,7 @@
 <span class="doccomment">/// A wrapper around any RNG which reseeds the underlying RNG after it</span>
 <span class="doccomment">/// has generated a certain number of random bytes.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span>: <span class="ident">Debug</span><span class="op">&gt;</span> {
     <span class="ident">rng</span>: <span class="ident">R</span>,
     <span class="ident">generation_threshold</span>: <span class="ident">u64</span>,
     <span class="ident">bytes_generated</span>: <span class="ident">u64</span>,
@@ -307,7 +311,7 @@
     <span class="kw">pub</span> <span class="ident">reseeder</span>: <span class="ident">Rsdr</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;&gt;</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Create a new `ReseedingRng` with the given parameters.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Arguments</span>
@@ -335,7 +339,7 @@
 }
 
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;&gt;</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">next_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
         <span class="self">self</span>.<span class="ident">reseed_if_necessary</span>();
         <span class="self">self</span>.<span class="ident">bytes_generated</span> <span class="op">+=</span> <span class="number">4</span>;
@@ -355,7 +359,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">R</span>: <span class="ident">SeedableRng</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Default</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">R</span>: <span class="ident">SeedableRng</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>, <span class="ident">Rsdr</span>: <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Debug</span> <span class="op">+</span> <span class="ident">Default</span><span class="op">&gt;</span>
      <span class="ident">SeedableRng</span><span class="op">&lt;</span>(<span class="ident">Rsdr</span>, <span class="ident">S</span>)<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ReseedingRng</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Rsdr</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, (<span class="ident">rsdr</span>, <span class="ident">seed</span>): (<span class="ident">Rsdr</span>, <span class="ident">S</span>)) {
         <span class="self">self</span>.<span class="ident">rng</span>.<span class="ident">reseed</span>(<span class="ident">seed</span>);
@@ -384,6 +388,7 @@
 <span class="doccomment">/// use rand::distributions::ascii_word_char;</span>
 <span class="doccomment">/// use rand::reseeding::{Reseeder, ReseedingRng};</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// #[derive(Debug)]</span>
 <span class="doccomment">/// struct TickTockReseeder { tick: bool }</span>
 <span class="doccomment">/// impl Reseeder&lt;StdRng&gt; for TickTockReseeder {</span>
 <span class="doccomment">///     fn reseed(&amp;mut self, rng: &amp;mut StdRng) {</span>
@@ -431,6 +436,7 @@
     <span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">ascii_word_char</span>;
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ReseedingRng</span>, <span class="ident">ReseedWithDefault</span>};
 
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
     <span class="kw">struct</span> <span class="ident">Counter</span> {
         <span class="ident">i</span>: <span class="ident">u32</span>
     }

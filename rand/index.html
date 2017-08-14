@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#11-654' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#11-659' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities for random number generation</p>
 
 <p>The <code>Rng</code> trait covers random number generation, and can be used directly
@@ -310,6 +310,14 @@ generates a certain number of random bytes.</p>
                        </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.ConstRng.html"
+                                  title='struct rand::ConstRng'>ConstRng</a></td>
+                           <td class='docblock-short'>
+                                <p>A very simple implementation of <code>Rng</code>, purely for testing. Returns the same
+value each time.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.Default.html"
                                   title='struct rand::Default'>Default</a></td>
                            <td class='docblock-short'>
@@ -380,19 +388,28 @@ the same stream of randomness multiple times.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="fn" href="fn.set_new_thread_rng.html"
+                                  title='fn rand::set_new_thread_rng'>set_new_thread_rng</a></td>
+                           <td class='docblock-short'>
+                                <p>Control how thread-local generators are created for new threads.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.set_thread_rng.html"
+                                  title='fn rand::set_thread_rng'>set_thread_rng</a></td>
+                           <td class='docblock-short'>
+                                <p>Set the thread-local RNG used by <code>thread_rng</code>. Only affects the current
+thread. See also <code>set_new_thread_rng</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="fn" href="fn.thread_rng.html"
                                   title='fn rand::thread_rng'>thread_rng</a></td>
                            <td class='docblock-short'>
                                 <p>Retrieve the lazily-initialized thread-local random number
-generator, seeded by the system. Intended to be used in method
-chaining style, e.g. <code>thread_rng().gen::&lt;i32&gt;()</code>.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.weak_rng.html"
-                                  title='fn rand::weak_rng'>weak_rng</a></td>
-                           <td class='docblock-short'>
-                                <p>Create a weak random number generator with a default algorithm and seed.</p>
+generator, seeded by the system. This is used by <code>random</code> and
+<code>random_with</code> to generate new values, and may be used directly with other
+distributions: <code>Range::new(0, 10).sample(&amp;mut thread_rng())</code>.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

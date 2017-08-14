@@ -151,6 +151,14 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -165,7 +173,7 @@
 <span class="doccomment">//! Xorshift generators</span>
 
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">num</span>::<span class="ident">Wrapping</span> <span class="kw">as</span> <span class="ident">w</span>;
-<span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">SeedableRng</span>};
+<span class="kw">use</span> {<span class="ident">OsRng</span>, <span class="ident">Rng</span>, <span class="ident">SeedableRng</span>};
 
 <span class="doccomment">/// An Xorshift[1] random number</span>
 <span class="doccomment">/// generator.</span>
@@ -187,6 +195,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">XorShiftRng</span> {
+    <span class="doccomment">/// Creates a new `XorShiftRng`, automatically seeded via `OsRng`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">XorShiftRng</span> {
+        <span class="kw">match</span> <span class="ident">OsRng</span>::<span class="ident">new</span>() {
+            <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) <span class="op">=&gt;</span> <span class="ident">XorShiftRng</span>::<span class="ident">new_from_rng</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;XorShiftRng::new: failed to get seed from OS: {:?}&quot;</span>, <span class="ident">e</span>)
+        }
+    }
+    
     <span class="doccomment">/// Creates a new XorShiftRng instance which is not seeded.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The initial values of this RNG are constants, so all generators created</span>

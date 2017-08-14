@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/reseeding.rs.html#130-133' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/reseeding.rs.html#132-135' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Reseeder&lt;R:&nbsp;?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; {
     fn <a href='#tymethod.reseed' class='fnname'>reseed</a>(&amp;mut self, rng: &amp;mut R);
 }</pre><div class='docblock'><p>Something that can be used to reseed an RNG via <code>ReseedingRng</code>.</p>
@@ -59,6 +59,7 @@
 <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::<span class="ident">ascii_word_char</span>;
 <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">reseeding</span>::{<span class="ident">Reseeder</span>, <span class="ident">ReseedingRng</span>};
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">TickTockReseeder</span> { <span class="ident">tick</span>: <span class="ident">bool</span> }
 <span class="kw">impl</span> <span class="ident">Reseeder</span><span class="op">&lt;</span><span class="ident">StdRng</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TickTockReseeder</span> {
     <span class="kw">fn</span> <span class="ident">reseed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StdRng</span>) {

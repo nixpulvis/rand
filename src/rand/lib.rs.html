@@ -697,6 +697,11 @@
 <span id="652">652</span>
 <span id="653">653</span>
 <span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -952,6 +957,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span>;
 
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
@@ -961,11 +967,10 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">iter</span>::<span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">Default</span>, <span class="ident">Rand</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">thread_local</span>::{<span class="ident">ThreadRng</span>, <span class="ident">thread_rng</span>, <span class="ident">random</span>, <span class="ident">random_with</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">thread_local</span>::{<span class="ident">ThreadRng</span>, <span class="ident">thread_rng</span>, <span class="ident">set_thread_rng</span>, <span class="ident">set_new_thread_rng</span>,
+        <span class="ident">random</span>, <span class="ident">random_with</span>};
 
 <span class="kw">use</span> <span class="ident">prng</span>::<span class="ident">IsaacWordRng</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>   <span class="comment">// available but unused without &quot;std&quot;</span>
-<span class="kw">use</span> <span class="ident">prng</span>::<span class="ident">XorShiftRng</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">distributions</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
@@ -981,7 +986,7 @@
 <span class="kw">mod</span> <span class="ident">thread_local</span>;
 
 <span class="doccomment">/// A random number generator.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Rng</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Rng</span>: <span class="ident">Debug</span> {
     <span class="doccomment">/// Return the next random u8.</span>
     <span class="doccomment">/// </span>
     <span class="doccomment">/// By default this is implemented in terms of `next_u32`.</span>
@@ -1159,6 +1164,37 @@
     <span class="kw">fn</span> <span class="ident">from_seed</span>(<span class="ident">seed</span>: <span class="ident">Seed</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
 }
 
+<span class="doccomment">/// A very simple implementation of `Rng`, purely for testing. Returns the same</span>
+<span class="doccomment">/// value each time.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// ```rust</span>
+<span class="doccomment">/// use rand::{ConstRng, Rng};</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// let mut my_rng = ConstRng::new(2u32);</span>
+<span class="doccomment">/// assert_eq!(my_rng.next_u32(), 2u32);</span>
+<span class="doccomment">/// assert_eq!(my_rng.next_u64(), (2u64 &lt;&lt; 32) + 2u64);</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConstRng</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="ident">v</span>: <span class="ident">T</span>
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">ConstRng</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a `ConstRng`, yielding the given value</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">v</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">ConstRng</span> { <span class="ident">v</span> }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">ConstRng</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">next_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="self">self</span>.<span class="ident">v</span> }
+}
+
+<span class="kw">impl</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">ConstRng</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">next_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="self">self</span>.<span class="ident">v</span> <span class="kw">as</span> <span class="ident">u32</span> }
+    <span class="kw">fn</span> <span class="ident">next_u64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="self">self</span>.<span class="ident">v</span> }
+}
+
 <span class="doccomment">/// The standard RNG. This is designed to be efficient on the current</span>
 <span class="doccomment">/// platform.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -1208,33 +1244,15 @@
     }
 }
 
-<span class="doccomment">/// Create a weak random number generator with a default algorithm and seed.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// It returns the fastest `Rng` algorithm currently available in Rust without</span>
-<span class="doccomment">/// consideration for cryptography or security. If you require a specifically</span>
-<span class="doccomment">/// seeded `Rng` for consistency over time you should pick one algorithm and</span>
-<span class="doccomment">/// create the `Rng` yourself.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This will read randomness from the operating system to seed the</span>
-<span class="doccomment">/// generator.</span>
-<span class="comment">// TODO: is this method useful?</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weak_rng</span>() <span class="op">-&gt;</span> <span class="ident">XorShiftRng</span> {
-    <span class="comment">// TODO: should this seed from `thread_rng()`?</span>
-    <span class="kw">match</span> <span class="ident">OsRng</span>::<span class="ident">new</span>() {
-        <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) <span class="op">=&gt;</span> <span class="ident">XorShiftRng</span>::<span class="ident">new_from_rng</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>),
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;weak_rng: failed to create seeded RNG: {:?}&quot;</span>, <span class="ident">e</span>)
-    }
-}
-
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">SeedableRng</span>, <span class="ident">StdRng</span>, <span class="ident">iter</span>};
+    <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>, <span class="ident">SeedableRng</span>, <span class="ident">StdRng</span>, <span class="ident">ConstRng</span>, <span class="ident">iter</span>};
     <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">uniform</span>, <span class="ident">range</span>, <span class="ident">ascii_word_char</span>};
     <span class="kw">use</span> <span class="ident">sequences</span>::<span class="ident">Shuffle</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">repeat</span>;
 
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
     <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MyRng</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> { <span class="ident">inner</span>: <span class="ident">R</span> }
 
     <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">MyRng</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span> {
@@ -1248,14 +1266,6 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rng</span>() <span class="op">-&gt;</span> <span class="ident">MyRng</span><span class="op">&lt;</span>::<span class="ident">ThreadRng</span><span class="op">&gt;</span> {
         <span class="ident">MyRng</span> { <span class="ident">inner</span>: ::<span class="ident">thread_rng</span>() }
-    }
-
-    <span class="kw">struct</span> <span class="ident">ConstRng</span> { <span class="ident">i</span>: <span class="ident">u64</span> }
-    <span class="kw">impl</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">ConstRng</span> {
-        <span class="kw">fn</span> <span class="ident">next_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> { <span class="self">self</span>.<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span> }
-        <span class="kw">fn</span> <span class="ident">next_u64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u64</span> { <span class="self">self</span>.<span class="ident">i</span> }
-
-        <span class="comment">// no fill_bytes on purpose</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter_eq</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">J</span><span class="op">&gt;</span>(<span class="ident">i</span>: <span class="ident">I</span>, <span class="ident">j</span>: <span class="ident">J</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
@@ -1277,7 +1287,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_fill_bytes_default</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">ConstRng</span> { <span class="ident">i</span>: <span class="number">0x11_22_33_44_55_66_77_88</span> };
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">ConstRng</span>::<span class="ident">new</span>(<span class="number">0x11_22_33_44_55_66_77_88u64</span>);
 
         <span class="comment">// check every remainder mod 8, both in small and big vectors.</span>
         <span class="kw">let</span> <span class="ident">lengths</span> <span class="op">=</span> [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>,

@@ -696,6 +696,22 @@
 <span id="651">651</span>
 <span id="652">652</span>
 <span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -716,7 +732,7 @@
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">num</span>::<span class="ident">Wrapping</span> <span class="kw">as</span> <span class="ident">w</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>;
 
-<span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">SeedableRng</span>};
+<span class="kw">use</span> {<span class="ident">OsRng</span>, <span class="ident">Rng</span>, <span class="ident">SeedableRng</span>};
 
 <span class="doccomment">/// Select 32- or 64-bit variant dependent on pointer size.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
@@ -760,6 +776,14 @@
 };
 
 <span class="kw">impl</span> <span class="ident">IsaacRng</span> {
+    <span class="doccomment">/// Creates a new `IsaacRng`, automatically seeded via `OsRng`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">IsaacRng</span> {
+        <span class="kw">match</span> <span class="ident">OsRng</span>::<span class="ident">new</span>() {
+            <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) <span class="op">=&gt;</span> <span class="ident">IsaacRng</span>::<span class="ident">new_from_rng</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;IsaacRng::new: failed to get seed from OS: {:?}&quot;</span>, <span class="ident">e</span>)
+        }
+    }
+    
     <span class="doccomment">/// Create an ISAAC random number generator using the default</span>
     <span class="doccomment">/// fixed seed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_unseeded</span>() <span class="op">-&gt;</span> <span class="ident">IsaacRng</span> {
@@ -1011,6 +1035,14 @@
 };
 
 <span class="kw">impl</span> <span class="ident">Isaac64Rng</span> {
+    <span class="doccomment">/// Creates a new `Isaac64Rng`, automatically seeded via `OsRng`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Isaac64Rng</span> {
+        <span class="kw">match</span> <span class="ident">OsRng</span>::<span class="ident">new</span>() {
+            <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) <span class="op">=&gt;</span> <span class="ident">Isaac64Rng</span>::<span class="ident">new_from_rng</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">r</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Isaac64Rng::new: failed to get seed from OS: {:?}&quot;</span>, <span class="ident">e</span>)
+        }
+    }
+    
     <span class="doccomment">/// Create a 64-bit ISAAC random number generator using the</span>
     <span class="doccomment">/// default fixed seed.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_unseeded</span>() <span class="op">-&gt;</span> <span class="ident">Isaac64Rng</span> {
