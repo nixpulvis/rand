@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rand/lib.rs.html#11-659' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rand/lib.rs.html#11-763' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities for random number generation</p>
 
 <p>The <code>Rng</code> trait covers random number generation, and can be used directly
@@ -269,7 +269,7 @@ steps it will indeed confirm that it is better to switch.</p>
              <span class="ident">keep_wins</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">total_keeps</span> <span class="kw">as</span> <span class="ident">f32</span>);
 }</pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use iter::<a class="fn" href="../rand/iter/fn.iter.html" title="fn rand::iter::iter">iter</a>;</code></td></tr><tr><td><code>pub use distributions::<a class="trait" href="../rand/distributions/trait.Rand.html" title="trait rand::distributions::Rand">Rand</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr><td><code>pub use iter::<a class="fn" href="../rand/iter/fn.iter.html" title="fn rand::iter::iter">iter</a>;</code></td></tr><tr><td><code>pub use distributions::<a class="trait" href="../rand/distributions/trait.Distribution.html" title="trait rand::distributions::Distribution">Distribution</a>;</code></td></tr><tr><td><code>pub use distributions::<a class="trait" href="../rand/distributions/trait.Rand.html" title="trait rand::distributions::Rand">Rand</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="mod" href="distributions/index.html"
@@ -362,6 +362,13 @@ platform.</p>
                                   title='trait rand::Rng'>Rng</a></td>
                            <td class='docblock-short'>
                                 <p>A random number generator.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.Sample.html"
+                                  title='trait rand::Sample'>Sample</a></td>
+                           <td class='docblock-short'>
+                                <p>Extension trait on [<code>Rng</code>] with some convenience methods.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

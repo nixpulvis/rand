@@ -376,6 +376,20 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -409,6 +423,8 @@
 <span class="doccomment">/// i.e. all code points in the range `0...0x10_FFFF`, except for the range</span>
 <span class="doccomment">/// `0xD800...0xDFFF` (the surrogate code points).  This includes</span>
 <span class="doccomment">/// unassigned/reserved code points.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// TODO: should this be removed in favour of a distribution?</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">codepoint</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">char</span> {
     <span class="comment">// a char is 21 bits</span>
@@ -426,6 +442,8 @@
 
 <span class="doccomment">/// Sample a `char`, uniformly distributed over ASCII letters and numbers:</span>
 <span class="doccomment">/// a-z, A-Z and 0-9.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// TODO: should this be removed in favour of `AsciiWordChar`?</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ascii_word_char</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">char</span> {
     <span class="kw">use</span> <span class="ident">sequences</span>::<span class="ident">Choose</span>;
@@ -454,6 +472,10 @@
 <span class="doccomment">/// Sample values uniformly over the closed range [0, 1]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Closed01</span>;
+
+<span class="doccomment">/// Sample values uniformly from the ASCII ranges z-a, A-Z, and 0-9.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AsciiWordChar</span>;
 
 
 <span class="comment">// ----- actual implementations -----</span>
@@ -620,6 +642,12 @@
 }
 <span class="macro">float_impls</span><span class="macro">!</span> { <span class="ident">SCALE_F64</span>, <span class="ident">f64</span>, <span class="number">53</span> }
 <span class="macro">float_impls</span><span class="macro">!</span> { <span class="ident">SCALE_F32</span>, <span class="ident">f32</span>, <span class="number">24</span> }
+
+<span class="kw">impl</span> <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AsciiWordChar</span> {
+    <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">char</span> {
+        <span class="ident">ascii_word_char</span>(<span class="ident">rng</span>)
+    }
+}
 
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>

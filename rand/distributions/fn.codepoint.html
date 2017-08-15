@@ -48,11 +48,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/distributions/uniform.rs.html#34-46' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/distributions/uniform.rs.html#36-48' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn codepoint&lt;R:&nbsp;<a class="trait" href="../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(rng: &amp;mut R) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a></pre><div class='docblock'><p>Sample a <code>char</code>, uniformly distributed over all Unicode scalar values,
 i.e. all code points in the range <code>0...0x10_FFFF</code>, except for the range
 <code>0xD800...0xDFFF</code> (the surrogate code points).  This includes
 unassigned/reserved code points.</p>
+
+<p>TODO: should this be removed in favour of a distribution?</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

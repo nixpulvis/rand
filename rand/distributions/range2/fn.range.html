@@ -48,12 +48,15 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rand/distributions/range2.rs.html#50-53' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rand/distributions/range2.rs.html#53-56' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn range&lt;X:&nbsp;<a class="trait" href="../../../rand/distributions/range2/trait.SampleRange.html" title="trait rand::distributions::range2::SampleRange">SampleRange</a>, R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(low: X, high: X, rng: &amp;mut R) -&gt; X</pre><div class='docblock'><p>Generate a random value in the range [<code>low</code>, <code>high</code>).</p>
 
 <p>This is a convenience wrapper around <code>Range</code>. If this function will be called
 repeatedly with the same arguments, one should use <code>Range</code>, as that will
 amortize the computations that allow for perfect uniformity.</p>
+
+<p>TODO: probably remove this function, since <code>new_range</code> is the explicit
+version and <code>Sample::gen_range</code> is the convenience version.</p>
 
 <h1 id='panics' class='section-header'><a href='#panics'>Panics</a></h1>
 <p>Panics if <code>low &gt;= high</code>.</p>

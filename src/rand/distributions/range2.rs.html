@@ -407,6 +407,9 @@
 <span id="362">362</span>
 <span id="363">363</span>
 <span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -441,6 +444,9 @@
 <span class="doccomment">/// This is a convenience wrapper around `Range`. If this function will be called</span>
 <span class="doccomment">/// repeatedly with the same arguments, one should use `Range`, as that will</span>
 <span class="doccomment">/// amortize the computations that allow for perfect uniformity.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// TODO: probably remove this function, since `new_range` is the explicit</span>
+<span class="doccomment">/// version and `Sample::gen_range` is the convenience version.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Panics</span>
 <span class="doccomment">///</span>

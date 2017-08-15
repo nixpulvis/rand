@@ -245,6 +245,15 @@
 <span id="200">200</span>
 <span id="201">201</span>
 <span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -269,7 +278,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">uniform</span>::{<span class="ident">uniform</span>, <span class="ident">codepoint</span>, <span class="ident">ascii_word_char</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">uniform</span>::{<span class="ident">Uniform</span>, <span class="ident">Uniform01</span>, <span class="ident">Open01</span>, <span class="ident">Closed01</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">uniform</span>::{<span class="ident">Uniform</span>, <span class="ident">Uniform01</span>, <span class="ident">Open01</span>, <span class="ident">Closed01</span>, <span class="ident">AsciiWordChar</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">range</span>::{<span class="ident">range</span>, <span class="ident">Range</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
@@ -320,7 +329,16 @@
     <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">T</span>;
 }
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>, <span class="ident">D</span>: <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">D</span> {
+    <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
+        (<span class="kw-2">*</span><span class="self">self</span>).<span class="ident">sample</span>(<span class="ident">rng</span>)
+    }
+}
+
 <span class="doccomment">/// Generic trait for sampling random values from some distribution</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// TODO: quite possibly remove both this and `SimpleRand` since `Sample` is</span>
+<span class="doccomment">/// more convenient and distributions like `Default` handle all the real work.</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">/// ```rust</span>
@@ -438,7 +456,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">thread_rng</span>};
-    <span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">weighted_bool</span>;
+    <span class="kw">use</span> <span class="ident">distributions</span>::{<span class="ident">weighted_bool</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_fn_weighted_bool</span>() {
