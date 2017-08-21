@@ -46,7 +46,7 @@ pub fn codepoint<R: Rng+?Sized>(rng: &mut R) -> char {
         }
     }
 }
-
+/*
 /// Sample a `char`, uniformly distributed over ASCII letters and numbers:
 /// a-z, A-Z and 0-9.
 /// 
@@ -60,7 +60,7 @@ pub fn ascii_word_char<R: Rng+?Sized>(rng: &mut R) -> char {
             0123456789";
     *GEN_ASCII_STR_CHARSET.choose(rng).unwrap() as char
 }
-
+*/
 
 // ----- Sampling distributions -----
 
@@ -249,14 +249,14 @@ macro_rules! float_impls {
 }
 float_impls! { SCALE_F64, f64, 53 }
 float_impls! { SCALE_F32, f32, 24 }
-
+/*
 impl Distribution<char> for AsciiWordChar {
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> char {
         ascii_word_char(rng)
     }
 }
-
-
+*/
+/*
 #[cfg(test)]
 mod tests {
     use {ConstRng, thread_rng, iter};
@@ -345,3 +345,4 @@ mod tests {
         }
     }
 }
+*/

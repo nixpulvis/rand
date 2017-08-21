@@ -14,7 +14,7 @@
 use core::default::Default;
 use core::fmt::Debug;
 
-use {Rng, SeedableRng};
+use {CryptoRng, Rng, SeedableRng};
 
 /// How many bytes of entropy the underling RNG is allowed to generate
 /// before it is reseeded
@@ -59,25 +59,30 @@ impl<R: Rng, Rsdr: Reseeder<R> + Debug> ReseedingRng<R, Rsdr> {
 }
 
 
-impl<R: Rng, Rsdr: Reseeder<R> + Debug> Rng for ReseedingRng<R, Rsdr> {
-    fn next_u32(&mut self) -> u32 {
+impl<R: Rng, Rsdr: Reseeder<R> + Debug> CryptoRng<!> for ReseedingRng<R, Rsdr> {
+    fn try_next_u32(&mut self) -> Result<u32, !> {
         self.reseed_if_necessary();
         self.bytes_generated += 4;
-        self.rng.next_u32()
+        Ok(self.rng.next_u32())
     }
 
-    fn next_u64(&mut self) -> u64 {
+    fn try_next_u64(&mut self) -> Result<u64, !> {
         self.reseed_if_necessary();
         self.bytes_generated += 8;
-        self.rng.next_u64()
+        Ok(self.rng.next_u64())
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 
-    fn fill_bytes(&mut self, dest: &mut [u8]) {
-        self.reseed_if_necessary();
-        self.bytes_generated += dest.len() as u64;
-        self.rng.fill_bytes(dest)
-    }
+//     fn fill_bytes(&mut self, dest: &mut [u8]) {
+//         self.reseed_if_necessary();
+//         self.bytes_generated += dest.len() as u64;
+//         self.rng.fill_bytes(dest)
+//     }
 }
+impl<R: Rng, Rsdr: Reseeder<R> + Debug> Rng for ReseedingRng<R, Rsdr> {}
 
 impl<S, R: SeedableRng<S>, Rsdr: Reseeder<R> + Debug + Default>
      SeedableRng<(Rsdr, S)> for ReseedingRng<R, Rsdr> {
@@ -147,7 +152,7 @@ impl<R: Rng + Default + ?Sized> Reseeder<R> for ReseedWithDefault {
 impl Default for ReseedWithDefault {
     fn default() -> ReseedWithDefault { ReseedWithDefault }
 }
-
+/*
 #[cfg(test)]
 mod test {
     use std::default::Default;
@@ -232,3 +237,4 @@ mod test {
         assert!(sum / v.len() as f64 != 0.0);
     }
 }
+*/

@@ -179,7 +179,7 @@ macro_rules! float_impl {
 
 float_impl! { f32 }
 float_impl! { f64 }
-
+/*
 #[cfg(test)]
 mod tests {
     use {Rng, thread_rng};
@@ -308,3 +308,4 @@ mod tests {
         }
     }
 }
+*/

@@ -150,7 +150,7 @@ impl Distribution<f64> for LogNormal {
         self.norm.sample(rng).exp()
     }
 }
-
+/*
 #[cfg(test)]
 mod tests {
     use distributions::{Distribution};
@@ -185,3 +185,4 @@ mod tests {
         LogNormal::new(10.0, -1.0);
     }
 }
+*/

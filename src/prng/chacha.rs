@@ -11,7 +11,7 @@
 //! The ChaCha random number generator.
 
 use core::num::Wrapping as w;
-use {Rng, SeedableRng, CryptoError};
+use {CryptoRng, Rng, SeedableRng, CryptoError};
 #[cfg(feature="std")]
 use OsRng;
 
@@ -87,7 +87,7 @@ impl ChaChaRng {
     #[cfg(feature="std")]
     pub fn new() -> Result<ChaChaRng, CryptoError> {
         let mut r = OsRng::new()?;
-        Ok(ChaChaRng::from_rng(&mut r))
+        ChaChaRng::from_rng(&mut r)
     }
     
     /// Create an ChaCha random number generator using the default
@@ -122,12 +122,12 @@ impl ChaChaRng {
     /// free entropy gained. In some cases where the parent and child RNGs use
     /// the same algorithm, both generate the same output sequences (possibly
     /// with a small lag).
-    pub fn from_rng<R: Rng+?Sized>(other: &mut R) -> ChaChaRng {
+    pub fn from_rng<E, CR: CryptoRng<E>+?Sized>(rng: &mut CR) -> Result<ChaChaRng, E> {
         let mut key : [u32; KEY_WORDS] = [0; KEY_WORDS];
         for word in key.iter_mut() {
-            *word = other.next_u32();
+            *word = rng.try_next_u32()?;
         }
-        SeedableRng::from_seed(&key[..])
+        Ok(SeedableRng::from_seed(&key[..]))
     }
 
     /// Sets the internal 128-bit ChaCha counter to
@@ -209,18 +209,23 @@ impl ChaChaRng {
     }
 }
 
-impl Rng for ChaChaRng {
+impl CryptoRng<!> for ChaChaRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn try_next_u32(&mut self) -> Result<u32, !> {
         if self.index == STATE_WORDS {
             self.update();
         }
 
         let value = self.buffer[self.index % STATE_WORDS];
         self.index += 1;
-        value.0
+        Ok(value.0)
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+impl Rng for ChaChaRng {}
 
 impl<'a> SeedableRng<&'a [u32]> for ChaChaRng {
     fn reseed(&mut self, seed: &'a [u32]) {
@@ -244,7 +249,7 @@ impl<'a> SeedableRng<&'a [u32]> for ChaChaRng {
     }
 }
 
-
+/*
 #[cfg(test)]
 mod test {
     use {Rng, SeedableRng, iter};
@@ -333,3 +338,4 @@ mod test {
         }
     }
 }
+*/

@@ -20,7 +20,7 @@
 use Rng;
 
 pub use self::default::Default;
-pub use self::uniform::{uniform, codepoint, ascii_word_char};
+pub use self::uniform::{uniform, codepoint/*, ascii_word_char*/};
 pub use self::uniform::{Uniform, Uniform01, Open01, Closed01, AsciiWordChar};
 pub use self::range::{Range};
 
@@ -197,7 +197,7 @@ fn ziggurat<R: Rng+?Sized, P, Z>(
         }
     }
 }
-
+/*
 #[cfg(test)]
 mod test {
     use {Rng, thread_rng};
@@ -211,3 +211,4 @@ mod test {
         assert_eq!(weighted_bool(1, s), true);
     }
 }
+*/

@@ -14,7 +14,7 @@ use std::fmt::Debug;
 use std::io::Read;
 use std::mem;
 
-use {Rng, CryptoError};
+use {CryptoRng, CryptoError};
 
 /// An RNG that reads random bytes straight from a `Read`. This will
 /// work best with an infinite reader, but this is not required.
@@ -46,24 +46,24 @@ impl<R: Read + Debug> ReadRng<R> {
     }
 }
 
-impl<R: Read + Debug> Rng for ReadRng<R> {
-    fn next_u32(&mut self) -> u32 {
+impl<R: Read + Debug> CryptoRng<CryptoError> for ReadRng<R> {
+    fn try_next_u32(&mut self) -> Result<u32, CryptoError> {
         // This is designed for speed: reading a LE integer on a LE
         // platform just involves blitting the bytes into the memory
         // of the u32, similarly for BE on BE; avoiding byteswapping.
         let mut buf = [0; 4];
-        fill(&mut self.reader, &mut buf).unwrap();
-        unsafe { *(buf.as_ptr() as *const u32) }
+        fill(&mut self.reader, &mut buf).map_err(|_| CryptoError)?;
+        Ok(unsafe { *(buf.as_ptr() as *const u32) })
     }
-    fn next_u64(&mut self) -> u64 {
+    fn try_next_u64(&mut self) -> Result<u64, CryptoError> {
         // see above for explanation.
         let mut buf = [0; 8];
-        fill(&mut self.reader, &mut buf).unwrap();
-        unsafe { *(buf.as_ptr() as *const u64) }
+        fill(&mut self.reader, &mut buf).map_err(|_| CryptoError)?;
+        Ok(unsafe { *(buf.as_ptr() as *const u64) })
     }
-    fn fill_bytes(&mut self, v: &mut [u8]) {
-        if v.len() == 0 { return }
-        fill(&mut self.reader, v).unwrap();
+    fn fill_bytes(&mut self, v: &mut [u8]) -> Result<(), CryptoError> {
+        if v.len() == 0 { return Ok(()) }
+        fill(&mut self.reader, v).map_err(|_| CryptoError)
     }
 }
 
@@ -80,7 +80,7 @@ fn fill(r: &mut Read, mut buf: &mut [u8]) -> Result<(), CryptoError> {
 #[cfg(test)]
 mod test {
     use super::ReadRng;
-    use Rng;
+    use CryptoRng;
 
     #[test]
     fn test_reader_rng_u64() {
@@ -90,18 +90,18 @@ mod test {
                      0,   0, 0, 0, 0, 0, 0, 3];
         let mut rng = ReadRng::new(&v[..]);
 
-        assert_eq!(rng.next_u64(), 1_u64.to_be());
-        assert_eq!(rng.next_u64(), 2_u64.to_be());
-        assert_eq!(rng.next_u64(), 3_u64.to_be());
+        assert_eq!(rng.try_next_u64(), Ok(1_u64.to_be()));
+        assert_eq!(rng.try_next_u64(), Ok(2_u64.to_be()));
+        assert_eq!(rng.try_next_u64(), Ok(3_u64.to_be()));
     }
     #[test]
     fn test_reader_rng_u32() {
         let v = vec![0u8, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3];
         let mut rng = ReadRng::new(&v[..]);
 
-        assert_eq!(rng.next_u32(), 1_u32.to_be());
-        assert_eq!(rng.next_u32(), 2_u32.to_be());
-        assert_eq!(rng.next_u32(), 3_u32.to_be());
+        assert_eq!(rng.try_next_u32(), Ok(1_u32.to_be()));
+        assert_eq!(rng.try_next_u32(), Ok(2_u32.to_be()));
+        assert_eq!(rng.try_next_u32(), Ok(3_u32.to_be()));
     }
     #[test]
     fn test_reader_rng_fill_bytes() {
@@ -115,10 +115,9 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_reader_rng_insufficient_bytes() {
         let mut rng = ReadRng::new(&[][..]);
         let mut v = [0u8; 3];
-        rng.fill_bytes(&mut v);
+        assert!(rng.fill_bytes(&mut v).is_err());
     }
 }

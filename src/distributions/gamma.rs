@@ -307,7 +307,7 @@ impl Distribution<f64> for StudentT {
         norm * (self.dof / self.chi.sample(rng)).sqrt()
     }
 }
-
+/*
 #[cfg(test)]
 mod test {
     use distributions::{Distribution};
@@ -361,3 +361,4 @@ mod test {
         }
     }
 }
+*/

@@ -13,7 +13,7 @@
 
 use std::{mem, fmt};
 
-use {Rng, CryptoError};
+use {CryptoRng, CryptoError};
 
 /// A random number generator that retrieves randomness straight from
 /// the operating system. Platform sources:
@@ -42,10 +42,10 @@ impl OsRng {
     }
 }
 
-impl Rng for OsRng {
-    fn next_u32(&mut self) -> u32 { self.0.next_u32() }
-    fn next_u64(&mut self) -> u64 { self.0.next_u64() }
-    fn fill_bytes(&mut self, v: &mut [u8]) { self.0.fill_bytes(v) }
+impl CryptoRng<CryptoError> for OsRng {
+    fn try_next_u32(&mut self) -> Result<u32, CryptoError> { self.0.try_next_u32() }
+    fn try_next_u64(&mut self) -> Result<u64, CryptoError> { self.0.try_next_u64() }
+    fn fill_bytes(&mut self, v: &mut [u8]) -> Result<(), CryptoError> { self.0.fill_bytes(v) }
 }
 
 impl fmt::Debug for OsRng {
@@ -54,16 +54,20 @@ impl fmt::Debug for OsRng {
     }
 }
 
-fn next_u32(fill_buf: &mut FnMut(&mut [u8])) -> u32 {
+fn next_u32(fill_buf: &mut FnMut(&mut [u8]) -> Result<(), CryptoError>) ->
+        Result<u32, CryptoError>
+{
     let mut buf: [u8; 4] = [0; 4];
-    fill_buf(&mut buf);
-    unsafe { mem::transmute::<[u8; 4], u32>(buf) }
+    fill_buf(&mut buf)?;
+    Ok(unsafe { mem::transmute::<[u8; 4], u32>(buf) })
 }
 
-fn next_u64(fill_buf: &mut FnMut(&mut [u8])) -> u64 {
+fn next_u64(fill_buf: &mut FnMut(&mut [u8]) -> Result<(), CryptoError>) ->
+        Result<u64, CryptoError>
+{
     let mut buf: [u8; 8] = [0; 8];
-    fill_buf(&mut buf);
-    unsafe { mem::transmute::<[u8; 8], u64>(buf) }
+    fill_buf(&mut buf)?;
+    Ok(unsafe { mem::transmute::<[u8; 8], u64>(buf) })
 }
 
 #[cfg(all(unix, not(target_os = "ios"),
@@ -80,7 +84,7 @@ mod imp {
 
     use std::io;
     use std::fs::File;
-    use {Rng, CryptoError};
+    use {CryptoRng, CryptoError};
     use read::ReadRng;
 
     #[cfg(all(target_os = "linux",
@@ -118,7 +122,7 @@ mod imp {
                       target_arch = "powerpc"))))]
     fn getrandom(_buf: &mut [u8]) -> libc::c_long { -1 }
 
-    fn getrandom_fill_bytes(v: &mut [u8]) {
+    fn getrandom_fill_bytes(v: &mut [u8]) -> Result<(), CryptoError> {
         let mut read = 0;
         let len = v.len();
         while read < len {
@@ -128,12 +132,13 @@ mod imp {
                 if err.kind() == io::ErrorKind::Interrupted {
                     continue
                 } else {
-                    panic!("unexpected getrandom error: {}", err);
+                    return Err(CryptoError);
                 }
             } else {
                 read += result as usize;
             }
         }
+        Ok(())
     }
 
     #[cfg(all(target_os = "linux",
@@ -196,20 +201,20 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> Result<u32, CryptoError> {
             match self.inner {
                 OsGetrandomRng => next_u32(&mut getrandom_fill_bytes),
-                OsReadRng(ref mut rng) => rng.next_u32(),
+                OsReadRng(ref mut rng) => rng.try_next_u32(),
             }
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> Result<u64, CryptoError> {
             match self.inner {
                 OsGetrandomRng => next_u64(&mut getrandom_fill_bytes),
-                OsReadRng(ref mut rng) => rng.next_u64(),
+                OsReadRng(ref mut rng) => rng.try_next_u64(),
             }
         }
-        fn fill_bytes(&mut self, v: &mut [u8]) {
+        fn fill_bytes(&mut self, v: &mut [u8]) -> Result<(), CryptoError> {
             match self.inner {
                 OsGetrandomRng => getrandom_fill_bytes(v),
                 OsReadRng(ref mut rng) => rng.fill_bytes(v)
@@ -225,7 +230,7 @@ mod imp {
     use super::{next_u32, next_u64};
 
     use std::io;
-    use Rng;
+    use CryptoRng;
     use self::libc::{c_int, size_t};
 
     #[derive(Debug)]
@@ -248,11 +253,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -260,7 +265,10 @@ mod imp {
                 SecRandomCopyBytes(kSecRandomDefault, v.len() as size_t, v.as_mut_ptr())
             };
             if ret == -1 {
-                panic!("couldn't generate random bytes: {}", io::Error::last_os_error());
+                // panic!("couldn't generate random bytes: {}", io::Error::last_os_error());
+                Err(CryptoError)
+            } else {
+                Ok(())
             }
         }
     }
@@ -271,7 +279,7 @@ mod imp {
     extern crate libc;
 
     use std::{io, ptr};
-    use Rng;
+    use CryptoRng;
 
     use super::{next_u32, next_u64};
 
@@ -284,11 +292,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -302,8 +310,11 @@ mod imp {
                                  ptr::null(), 0)
                 };
                 if ret == -1 || s_len != s.len() {
-                    panic!("kern.arandom sysctl failed! (returned {}, s.len() {}, oldlenp {})",
-                           ret, s.len(), s_len);
+                    //panic!("kern.arandom sysctl failed! (returned {}, s.len() {}, oldlenp {})",
+                    //       ret, s.len(), s_len);
+                    Err(CryptoError)
+                } else {
+                    Ok(())
                 }
             }
         }
@@ -315,7 +326,7 @@ mod imp {
     extern crate libc;
 
     use std::io;
-    use Rng;
+    use CryptoRng;
 
     use super::{next_u32, next_u64};
 
@@ -328,11 +339,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -342,8 +353,11 @@ mod imp {
                     libc::getentropy(s.as_mut_ptr() as *mut libc::c_void, s.len())
                 };
                 if ret == -1 {
-                    let err = io::Error::last_os_error();
-                    panic!("getentropy failed: {}", err);
+                    //let err = io::Error::last_os_error();
+                    //panic!("getentropy failed: {}", err);
+                    Err(CryptoError)
+                } else {
+                    Ok(())
                 }
             }
         }
@@ -354,7 +368,7 @@ mod imp {
 mod imp {
     use std::io;
     use std::fs::File;
-    use Rng;
+    use CryptoRng;
     use read::ReadRng;
 
     #[derive(Debug)]
@@ -371,11 +385,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             self.inner.next_u32()
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             self.inner.next_u64()
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -389,7 +403,7 @@ mod imp {
     extern crate magenta;
 
     use std::io;
-    use Rng;
+    use CryptoRng;
 
     use super::{next_u32, next_u64};
 
@@ -402,11 +416,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
-            next_u32(&mut |v| self.fill_bytes(v))
+    impl CryptoRng<CryptoError> for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
+            try_next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -415,7 +429,10 @@ mod imp {
                 while filled < s.len() {
                     match magenta::cprng_draw(&mut s[filled..]) {
                         Ok(actual) => filled += actual,
-                        Err(e) => panic!("cprng_draw failed: {:?}", e),
+                        Err(_e) => {
+                            //panic!("cprng_draw failed: {:?}", e),
+                            Err(CryptoError)
+                        }
                     };
                 }
             }
@@ -426,7 +443,7 @@ mod imp {
 #[cfg(windows)]
 mod imp {
     use std::io;
-    use Rng;
+    use CryptoRng;
 
     use super::{next_u32, next_u64};
 
@@ -448,11 +465,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -463,8 +480,11 @@ mod imp {
                     SystemFunction036(slice.as_mut_ptr(), slice.len() as ULONG)
                 };
                 if ret == 0 {
-                    panic!("couldn't generate random bytes: {}",
-                           io::Error::last_os_error());
+                    //panic!("couldn't generate random bytes: {}",
+                    //       io::Error::last_os_error());
+                    Err(CryptoError)
+                } else {
+                    Ok(())
                 }
             }
         }
@@ -477,7 +497,7 @@ mod imp {
 
     use std::io;
     use std::mem;
-    use Rng;
+    use CryptoRng;
 
     use super::{next_u32, next_u64};
 
@@ -513,7 +533,7 @@ mod imp {
             };
             if result != 0 {
                 assert!(iface.get_random_bytes.is_some());
-                let result = OsRng(iface.get_random_bytes.take().unwrap());
+                let result = OsRng(iface.get_random_bytes.take().or_or(CryptoError)?);
                 Ok(result)
             } else {
                 // let error = io::ErrorKind::NotFound;
@@ -523,11 +543,11 @@ mod imp {
         }
     }
 
-    impl Rng for OsRng {
-        fn next_u32(&mut self) -> u32 {
+    impl CryptoRng for OsRng {
+        fn try_next_u32(&mut self) -> u32 {
             next_u32(&mut |v| self.fill_bytes(v))
         }
-        fn next_u64(&mut self) -> u64 {
+        fn try_next_u64(&mut self) -> u64 {
             next_u64(&mut |v| self.fill_bytes(v))
         }
         fn fill_bytes(&mut self, v: &mut [u8]) {
@@ -551,7 +571,7 @@ mod imp {
 #[cfg(test)]
 mod test {
     use std::sync::mpsc::channel;
-    use Rng;
+    use CryptoRng;
     use OsRng;
     use std::thread;
 
@@ -559,8 +579,8 @@ mod test {
     fn test_os_rng() {
         let mut r = OsRng::new().unwrap();
 
-        r.next_u32();
-        r.next_u64();
+        r.try_next_u32();
+        r.try_next_u64();
 
         let mut v = [0u8; 1000];
         r.fill_bytes(&mut v);
@@ -585,9 +605,9 @@ mod test {
                 let mut v = [0u8; 1000];
 
                 for _ in 0..100 {
-                    r.next_u32();
+                    r.try_next_u32();
                     thread::yield_now();
-                    r.next_u64();
+                    r.try_next_u64();
                     thread::yield_now();
                     r.fill_bytes(&mut v);
                     thread::yield_now();

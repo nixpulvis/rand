@@ -248,6 +248,8 @@
 #![cfg_attr(not(feature="std"), no_std)]
 #![cfg_attr(feature = "i128_support", feature(i128_type, i128))]
 
+#![feature(never_type)]
+
 // We need to use several items from "core" for no_std support.
 #[cfg(feature="std")]
 extern crate core;
@@ -260,9 +262,9 @@ pub use read::ReadRng;
 pub use os::OsRng;
 pub use iter::iter;
 pub use distributions::{Distribution, Default, Rand};
-#[cfg(feature="std")]
-pub use thread_local::{ThreadRng, thread_rng, set_thread_rng, set_new_thread_rng,
-        random, random_with};
+// #[cfg(feature="std")]
+// pub use thread_local::{ThreadRng, thread_rng, set_thread_rng, set_new_thread_rng,
+//         random, random_with};
 
 use prng::IsaacWordRng;
 
@@ -270,21 +272,40 @@ pub mod distributions;
 pub mod iter;
 pub mod prng;
 pub mod reseeding;
-pub mod sequences;
+// pub mod sequences;
 
 #[cfg(feature="std")]
 mod os;
 #[cfg(feature="std")]
 mod read;
-#[cfg(feature="std")]
-mod thread_local;
+// #[cfg(feature="std")]
+// mod thread_local;
 
 /// Error type for cryptographic generators. Only operating system and hardware
 /// generators should be able to fail. In such cases there is little that can
 /// be done besides try again later.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct CryptoError;
 
+pub trait CryptoRng<Error> {
+    fn try_next_u32(&mut self) -> Result<u32, Error>;
+    fn try_next_u64(&mut self) -> Result<u64, Error> {
+        let x = self.try_next_u32()? as u64;
+        let y = self.try_next_u32()? as u64;
+        Ok((x << 32) | y)
+    }
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error>;
+}
+
+pub trait Rng: CryptoRng<!> {
+    fn next_u32(&mut self) -> u32 {
+        self.try_next_u32().unwrap_or_else(|e| e)
+    }
+    fn next_u64(&mut self) -> u64 {
+        self.try_next_u64().unwrap_or_else(|e| e)
+    }
+}
+/*
 /// A random number generator.
 pub trait Rng {
     /// Return the next random u32.
@@ -305,6 +326,7 @@ pub trait Rng {
     /// Return the next random u128.
     /// 
     /// By default this is implemented in terms of `next_u64`.
+    // TODO: this needs implementing in various places
     fn next_u128(&mut self) -> u128 {
         ((self.next_u64() as u128) << 64) | (self.next_u64() as u128)
     }
@@ -360,7 +382,8 @@ pub trait Rng {
         }
     }
 }
-
+*/
+/*
 impl<'a, R: ?Sized> Rng for &'a mut R where R: Rng {
     fn next_u32(&mut self) -> u32 {
         (**self).next_u32()
@@ -399,6 +422,7 @@ impl<R: ?Sized> Rng for Box<R> where R: Rng {
         (**self).fill_bytes(dest)
     }
 }
+*/
 
 /// A random number generator that can be explicitly seeded to produce
 /// the same stream of randomness multiple times.
@@ -523,7 +547,7 @@ impl<R: Rng+?Sized> Sample for R {
         distr.sample(self)
     }
 }
-
+/*
 /// A very simple implementation of `Rng`, purely for testing. Returns the same
 /// value each time.
 /// 
@@ -554,7 +578,7 @@ impl Rng for ConstRng<u64> {
     fn next_u32(&mut self) -> u32 { self.v as u32 }
     fn next_u64(&mut self) -> u64 { self.v }
 }
-
+*/
 /// The standard RNG. This is designed to be efficient on the current
 /// platform.
 #[derive(Copy, Clone, Debug)]
@@ -580,17 +604,22 @@ impl StdRng {
     }
 }
 
-impl Rng for StdRng {
+impl CryptoRng<!> for StdRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
-        self.rng.next_u32()
+    fn try_next_u32(&mut self) -> Result<u32, !> {
+        Ok(self.rng.next_u32())
     }
 
     #[inline]
-    fn next_u64(&mut self) -> u64 {
-        self.rng.next_u64()
+    fn try_next_u64(&mut self) -> Result<u64, !> {
+        Ok(self.rng.next_u64())
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+impl Rng for StdRng {}
 
 impl<'a> SeedableRng<&'a [usize]> for StdRng {
     fn reseed(&mut self, seed: &'a [usize]) {
@@ -610,7 +639,7 @@ impl From<::std::io::Error> for CryptoError {
     }
 }
 
-
+/*
 #[cfg(test)]
 mod test {
     use {Rng, thread_rng, SeedableRng, StdRng, ConstRng, iter, Sample};
@@ -743,3 +772,4 @@ mod test {
         let _c = rng.sample(Exp::new(2.0));
     }
 }
+*/

@@ -14,7 +14,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::Mutex;
 
-use {Rng, OsRng, Rand, Default};
+use {CryptoRng, Rng, OsRng, Rand, Default};
 
 // use reseeding::{Reseeder, ReseedingRng};
 // 
@@ -49,20 +49,20 @@ pub struct ThreadRng {
     rng: Rc<RefCell<Box<Rng>>>,
 }
 
-impl Rng for ThreadRng {
-    fn next_u32(&mut self) -> u32 {
+impl CryptoRng<!> for ThreadRng {
+    fn try_next_u32(&mut self) -> Result<u32, !> {
         self.rng.borrow_mut().next_u32()
     }
 
-    fn next_u64(&mut self) -> u64 {
+    fn try_next_u64(&mut self) -> Result<u64, !> {
         self.rng.borrow_mut().next_u64()
     }
-
-    #[inline]
-    fn fill_bytes(&mut self, bytes: &mut [u8]) {
-        self.rng.borrow_mut().fill_bytes(bytes)
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+impl Rng for ThreadRng {}
 
 thread_local!(
     static THREAD_RNG_CREATOR: Mutex<RefCell<Box<Fn() -> Box<Rng>>>> = {
@@ -236,7 +236,7 @@ pub fn random<T: Rand<Default>>() -> T {
 pub fn random_with<D, T: Rand<D>>(distribution: D) -> T {
     T::rand(&mut thread_rng(), distribution)
 }
-
+/*
 #[cfg(test)]
 mod test {
     use std::thread;
@@ -258,3 +258,4 @@ mod test {
         assert!((x, y) != (v, v));
     }
 }
+*/

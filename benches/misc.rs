@@ -9,7 +9,7 @@ use std::mem::size_of;
 use test::{black_box, Bencher};
 use rand::StdRng;
 use rand::prng::XorShiftRng;
-use rand::sequences::{sample, Shuffle};
+// use rand::sequences::{sample, Shuffle};
 use rand::distributions::{Rand, Uniform, Uniform01};
 
 #[bench]
@@ -56,20 +56,20 @@ fn misc_convert_f64(b: &mut Bencher) {
     b.bytes = size_of::<f64>() as u64 * RAND_BENCH_N;
 }
 
-#[bench]
-fn misc_shuffle_100(b: &mut Bencher) {
-    let mut rng = XorShiftRng::new();
-    let x : &mut [usize] = &mut [1; 100];
-    b.iter(|| {
-        x.shuffle(&mut rng);
-    })
-}
-
-#[bench]
-fn misc_sample_10_of_100(b: &mut Bencher) {
-    let mut rng = XorShiftRng::new();
-    let x : &[usize] = &[1; 100];
-    b.iter(|| {
-        sample(&mut rng, x, 10);
-    })
-}
+// #[bench]
+// fn misc_shuffle_100(b: &mut Bencher) {
+//     let mut rng = XorShiftRng::new();
+//     let x : &mut [usize] = &mut [1; 100];
+//     b.iter(|| {
+//         x.shuffle(&mut rng);
+//     })
+// }
+// 
+// #[bench]
+// fn misc_sample_10_of_100(b: &mut Bencher) {
+//     let mut rng = XorShiftRng::new();
+//     let x : &[usize] = &[1; 100];
+//     b.iter(|| {
+//         sample(&mut rng, x, 10);
+//     })
+// }

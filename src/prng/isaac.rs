@@ -17,7 +17,7 @@ use core::iter::repeat;
 use core::num::Wrapping as w;
 use core::fmt;
 
-use {Rng, SeedableRng, CryptoError};
+use {CryptoRng, Rng, SeedableRng, CryptoError};
 #[cfg(feature="std")]
 use OsRng;
 
@@ -67,7 +67,7 @@ impl IsaacRng {
     #[cfg(feature="std")]
     pub fn new() -> Result<IsaacRng, CryptoError> {
         let mut r = OsRng::new()?;
-        Ok(IsaacRng::from_rng(&mut r))
+        IsaacRng::from_rng(&mut r)
     }
     
     /// Create an ISAAC random number generator using the default
@@ -84,13 +84,13 @@ impl IsaacRng {
     /// free entropy gained. In some cases where the parent and child RNGs use
     /// the same algorithm, both generate the same output sequences (possibly
     /// with a small lag).
-    pub fn from_rng<R: Rng+?Sized>(other: &mut R) -> IsaacRng {
+    pub fn from_rng<E, CR: CryptoRng<E>+?Sized>(rng: &mut CR) -> Result<IsaacRng, E> {
         let mut ret = EMPTY;
         unsafe {
             let ptr = ret.rsl.as_mut_ptr() as *mut u8;
 
             let slice = slice::from_raw_parts_mut(ptr, RAND_SIZE_USIZE * 4);
-            other.fill_bytes(slice);
+            rng.fill_bytes(slice)?;
         }
         ret.cnt = 0;
         ret.a = w(0);
@@ -98,7 +98,7 @@ impl IsaacRng {
         ret.c = w(0);
 
         ret.init(true);
-        return ret;
+        Ok(ret)
     }
 
     /// Initialises `self`. If `use_rsl` is true, then use the current value
@@ -231,9 +231,9 @@ impl Clone for IsaacRng {
     }
 }
 
-impl Rng for IsaacRng {
+impl CryptoRng<!> for IsaacRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn try_next_u32(&mut self) -> Result<u32, !> {
         if self.cnt == 0 {
             // make some more numbers
             self.isaac();
@@ -251,9 +251,15 @@ impl Rng for IsaacRng {
         // (the % is cheaply telling the optimiser that we're always
         // in bounds, without unsafe. NB. this is a power of two, so
         // it optimises to a bitwise mask).
-        self.rsl[(self.cnt % RAND_SIZE) as usize].0
+        Ok(self.rsl[(self.cnt % RAND_SIZE) as usize].0)
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+
+impl Rng for IsaacRng {}
 
 impl<'a> SeedableRng<&'a [u32]> for IsaacRng {
     fn reseed(&mut self, seed: &'a [u32]) {
@@ -325,7 +331,7 @@ impl Isaac64Rng {
     #[cfg(feature="std")]
     pub fn new() -> Result<Isaac64Rng, CryptoError> {
         let mut r = OsRng::new()?;
-        Ok(Isaac64Rng::from_rng(&mut r))
+        Isaac64Rng::from_rng(&mut r)
     }
     
     /// Create a 64-bit ISAAC random number generator using the
@@ -342,13 +348,13 @@ impl Isaac64Rng {
     /// free entropy gained. In some cases where the parent and child RNGs use
     /// the same algorithm, both generate the same output sequences (possibly
     /// with a small lag).
-    pub fn from_rng<R: Rng+?Sized>(other: &mut R) -> Isaac64Rng {
+    pub fn from_rng<E, CR: CryptoRng<E>+?Sized>(rng: &mut CR) -> Result<Isaac64Rng, E> {
         let mut ret = EMPTY_64;
         unsafe {
             let ptr = ret.rsl.as_mut_ptr() as *mut u8;
 
             let slice = slice::from_raw_parts_mut(ptr, RAND_SIZE_64 * 8);
-            other.fill_bytes(slice);
+            rng.fill_bytes(slice)?;
         }
         ret.cnt = 0;
         ret.a = w(0);
@@ -356,7 +362,7 @@ impl Isaac64Rng {
         ret.c = w(0);
 
         ret.init(true);
-        return ret;
+        Ok(ret)
     }
 
     /// Initialises `self`. If `use_rsl` is true, then use the current value
@@ -493,26 +499,32 @@ impl Clone for Isaac64Rng {
     }
 }
 
-impl Rng for Isaac64Rng {
+impl CryptoRng<!> for Isaac64Rng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
-        self.next_u64() as u32
+    fn try_next_u32(&mut self) -> Result<u32, !> {
+        self.try_next_u64().map(|v| v as u32)
     }
 
     #[inline]
-    fn next_u64(&mut self) -> u64 {
+    fn try_next_u64(&mut self) -> Result<u64, !> {
         if self.cnt == 0 {
             // make some more numbers
             self.isaac64();
         }
         self.cnt -= 1;
 
-        // See corresponding location in IsaacRng.next_u32 for
+        // See corresponding location in IsaacRng.try_next_u32 for
         // explanation.
         debug_assert!(self.cnt < RAND_SIZE_64);
-        self.rsl[(self.cnt % RAND_SIZE_64) as usize].0
+        Ok(self.rsl[(self.cnt % RAND_SIZE_64) as usize].0)
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+
+impl Rng for Isaac64Rng {}
 
 impl<'a> SeedableRng<&'a [u64]> for Isaac64Rng {
     fn reseed(&mut self, seed: &'a [u64]) {
@@ -548,7 +560,7 @@ impl fmt::Debug for Isaac64Rng {
         write!(f, "Isaac64Rng {{}}")
     }
 }
-
+/*
 #[cfg(test)]
 mod test {
     use {Rng, SeedableRng, iter};
@@ -667,3 +679,4 @@ mod test {
         }
     }
 }
+*/

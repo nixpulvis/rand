@@ -62,7 +62,7 @@ impl Distribution<char> for Default {
     }
 }
 
-
+/*
 #[cfg(test)]
 mod tests {
     use {Rng, thread_rng};
@@ -85,3 +85,4 @@ mod tests {
         do_test::<bool>(rng);
     }
 }
+*/

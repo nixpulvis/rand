@@ -212,7 +212,7 @@ macro_rules! range_float_impl {
 
 range_float_impl! { f32 }
 range_float_impl! { f64 }
-
+/*
 #[cfg(test)]
 mod tests {
     use {Rng, thread_rng};
@@ -342,3 +342,4 @@ mod tests {
         }
     }
 }
+*/

@@ -66,13 +66,13 @@ fn gen_usize_std(b: &mut Bencher) {
     b.bytes = size_of::<usize>() as u64 * RAND_BENCH_N;
 }
 
-#[bench]
-fn gen_usize_os(b: &mut Bencher) {
-    let mut rng = OsRng::new().unwrap();
-    b.iter(|| {
-        for _ in 0..RAND_BENCH_N {
-            black_box(usize::rand(&mut rng, Default));
-        }
-    });
-    b.bytes = size_of::<usize>() as u64 * RAND_BENCH_N;
-}
+// #[bench]
+// fn gen_usize_os(b: &mut Bencher) {
+//     let mut rng = OsRng::new().unwrap();
+//     b.iter(|| {
+//         for _ in 0..RAND_BENCH_N {
+//             black_box(usize::rand(&mut rng, Default));
+//         }
+//     });
+//     b.bytes = size_of::<usize>() as u64 * RAND_BENCH_N;
+// }

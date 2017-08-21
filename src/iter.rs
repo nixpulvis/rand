@@ -149,7 +149,7 @@ impl<'a, R:?Sized+'a, U, F> Iterator for FlatMap<'a, R, U, F>
         self.len.map_or((usize::MAX, None), |len| (len, Some(len)))
     }
 }
-
+/*
 #[cfg(test)]
 mod tests {
     use {Rng, thread_rng, iter};
@@ -178,3 +178,4 @@ mod tests {
         assert_eq!(x.len(), 10);
     }
 }
+*/

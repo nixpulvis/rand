@@ -88,7 +88,7 @@ impl Distribution<f64> for Exp {
         exp1(rng) * self.lambda_inverse
     }
 }
-
+/*
 #[cfg(test)]
 mod test {
     use distributions::{Distribution};
@@ -113,3 +113,4 @@ mod test {
         Exp::new(-10.0);
     }
 }
+*/

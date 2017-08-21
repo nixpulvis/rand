@@ -11,7 +11,7 @@
 //! Xorshift generators
 
 use core::num::Wrapping as w;
-use {Rng, SeedableRng, CryptoError};
+use {CryptoRng, Rng, SeedableRng, CryptoError};
 #[cfg(feature="std")]
 use OsRng;
 
@@ -39,7 +39,7 @@ impl XorShiftRng {
     #[cfg(feature="std")]
     pub fn new() -> Result<XorShiftRng, CryptoError> {
         let mut r = OsRng::new()?;
-        Ok(XorShiftRng::from_rng(&mut r))
+        XorShiftRng::from_rng(&mut r)
     }
     
     /// Creates a new XorShiftRng instance which is not seeded.
@@ -63,22 +63,23 @@ impl XorShiftRng {
     /// free entropy gained. In some cases where the parent and child RNGs use
     /// the same algorithm, both generate the same output sequences (possibly
     /// with a small lag).
-    pub fn from_rng<R: Rng+?Sized>(rng: &mut R) -> XorShiftRng {
+    pub fn from_rng<E, CR: CryptoRng<E>+?Sized>(rng: &mut CR) -> Result<XorShiftRng, E> {
         let mut tuple: (u32, u32, u32, u32);
         loop {
-            tuple = (rng.next_u32(), rng.next_u32(), rng.next_u32(), rng.next_u32());
+            tuple = (rng.try_next_u32()?, rng.try_next_u32()?,
+                    rng.try_next_u32()?, rng.try_next_u32()?);
             if tuple != (0, 0, 0, 0) {
                 break;
             }
         }
         let (x, y, z, w_) = tuple;
-        XorShiftRng { x: w(x), y: w(y), z: w(z), w: w(w_) }
+        Ok(XorShiftRng { x: w(x), y: w(y), z: w(z), w: w(w_) })
     }
 }
 
-impl Rng for XorShiftRng {
+impl CryptoRng<!> for XorShiftRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn try_next_u32(&mut self) -> Result<u32, !> {
         let x = self.x;
         let t = x ^ (x << 11);
         self.x = self.y;
@@ -86,9 +87,14 @@ impl Rng for XorShiftRng {
         self.z = self.w;
         let w_ = self.w;
         self.w = w_ ^ (w_ >> 19) ^ (t ^ (t >> 8));
-        self.w.0
+        Ok(self.w.0)
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), !> {
+        unimplemented!()
     }
 }
+impl Rng for XorShiftRng {}
 
 impl SeedableRng<[u32; 4]> for XorShiftRng {
     /// Reseed an XorShiftRng. This will panic if `seed` is entirely 0.
