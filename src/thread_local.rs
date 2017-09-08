@@ -50,11 +50,11 @@ pub struct ThreadRng {
 }
 
 impl Rng for ThreadRng {
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         self.rng.borrow_mut().next_u32()
     }
 
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         self.rng.borrow_mut().next_u64()
     }
 

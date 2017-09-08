@@ -188,14 +188,14 @@ impl ChaChaRng {
 
 impl Rng for ChaChaRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         if self.index == STATE_WORDS {
             self.update();
         }
 
         let value = self.buffer[self.index % STATE_WORDS];
         self.index += 1;
-        value.0
+        Ok(value.0)
     }
     
     // Custom implementation allowing larger reads from buffer is about 8%
@@ -228,7 +228,7 @@ impl Rng for ChaChaRng {
         let n = left.len();
         if n > 0 {
             let chunk: [u8; 4] = unsafe {
-                transmute(self.next_u32().to_le())
+                transmute(self.next_u32()?.to_le())
             };
             left.copy_from_slice(&chunk[..n]);
         }
@@ -237,12 +237,12 @@ impl Rng for ChaChaRng {
 }
 
 impl FromRng for ChaChaRng {
-    fn from_rng<R: Rng+?Sized>(other: &mut R) -> ChaChaRng {
+    fn from_rng<R: Rng+?Sized>(other: &mut R) -> Result<ChaChaRng, CryptoError> {
         let mut key : [u32; KEY_WORDS] = [0; KEY_WORDS];
         for word in key.iter_mut() {
-            *word = other.next_u32();
+            *word = other.next_u32()?;
         }
-        SeedableRng::from_seed(&key[..])
+        Ok(SeedableRng::from_seed(&key[..]))
     }
 }
 

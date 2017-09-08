@@ -11,7 +11,7 @@
 //! Xorshift generators
 
 use core::num::Wrapping as w;
-use {Rng, FromRng, SeedableRng};
+use {Rng, FromRng, SeedableRng, CryptoError};
 
 /// An Xorshift[1] random number
 /// generator.
@@ -50,22 +50,22 @@ impl XorShiftRng {
 }
 
 impl FromRng for XorShiftRng {
-    fn from_rng<R: Rng+?Sized>(rng: &mut R) -> XorShiftRng {
+    fn from_rng<R: Rng+?Sized>(rng: &mut R) -> Result<XorShiftRng, CryptoError> {
         let mut tuple: (u32, u32, u32, u32);
         loop {
-            tuple = (rng.next_u32(), rng.next_u32(), rng.next_u32(), rng.next_u32());
+            tuple = (rng.next_u32()?, rng.next_u32()?, rng.next_u32()?, rng.next_u32()?);
             if tuple != (0, 0, 0, 0) {
                 break;
             }
         }
         let (x, y, z, w_) = tuple;
-        XorShiftRng { x: w(x), y: w(y), z: w(z), w: w(w_) }
+        Ok(XorShiftRng { x: w(x), y: w(y), z: w(z), w: w(w_) })
     }
 }
 
 impl Rng for XorShiftRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         let x = self.x;
         let t = x ^ (x << 11);
         self.x = self.y;
@@ -73,7 +73,7 @@ impl Rng for XorShiftRng {
         self.z = self.w;
         let w_ = self.w;
         self.w = w_ ^ (w_ >> 19) ^ (t ^ (t >> 8));
-        self.w.0
+        Ok(self.w.0)
     }
 }
 

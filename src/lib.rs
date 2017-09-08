@@ -312,7 +312,7 @@ mod thread_local;
 /// may panic.
 pub trait Rng {
     /// Return the next random u32.
-    fn next_u32(&mut self) -> u32;
+    fn next_u32(&mut self) -> Result<u32, CryptoError>;
 
     /// Return the next random u64.
     ///
@@ -320,22 +320,22 @@ pub trait Rng {
     /// implementation of this trait must provide at least one of
     /// these two methods. Similarly to `next_u32`, this rarely needs
     /// to be called directly, prefer `r.gen()` to `r.next_u64()`.
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         // Use LE; we explicitly generate one value before the next.
-        let x = self.next_u32() as u64;
-        let y = self.next_u32() as u64;
-        (y << 32) | x
+        let x = self.next_u32()? as u64;
+        let y = self.next_u32()? as u64;
+        Ok((y << 32) | x)
     }
 
     #[cfg(feature = "i128_support")]
     /// Return the next random u128.
     /// 
     /// By default this is implemented in terms of `next_u64` in LE order.
-    fn next_u128(&mut self) -> u128 {
+    fn next_u128(&mut self) -> Result<u128, CryptoError> {
         // Use LE; we explicitly generate one value before the next.
-        let x = self.next_u64() as u128;
-        let y = self.next_u64() as u128;
-        (y << 64) | x
+        let x = self.next_u64()? as u128;
+        let y = self.next_u64()? as u128;
+        Ok((y << 64) | x)
     }
     
     /// Fill `dest` entirely with random data.
@@ -369,14 +369,14 @@ pub trait Rng {
             let (l, r) = {left}.split_at_mut(8);
             left = r;
             let chunk: [u8; 8] = unsafe {
-                transmute(self.next_u64().to_le())
+                transmute(self.next_u64()?.to_le())
             };
             l.copy_from_slice(&chunk);
         }
         let n = left.len();
         if n > 0 {
             let chunk: [u8; 8] = unsafe {
-                transmute(self.next_u64().to_le())
+                transmute(self.next_u64()?.to_le())
             };
             left.copy_from_slice(&chunk[..n]);
         }
@@ -386,16 +386,16 @@ pub trait Rng {
 
 #[cfg(feature="std")]
 impl<R> Rng for Box<R> where R: Rng+?Sized {
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         (**self).next_u32()
     }
 
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         (**self).next_u64()
     }
 
     #[cfg(feature = "i128_support")]
-    fn next_u128(&mut self) -> u128 {
+    fn next_u128(&mut self) -> Result<u128, CryptoError> {
         (**self).next_u128()
     }
 
@@ -406,14 +406,14 @@ impl<R> Rng for Box<R> where R: Rng+?Sized {
 
 /// Support mechanism for creating random number generators seeded by other
 /// generators. All PRNGs should support this to enable `NewRng` support.
-pub trait FromRng {
+pub trait FromRng: Sized {
     /// Creates a new instance, seeded from another `Rng`.
     /// 
     /// Seeding from a cryptographic generator should be fine. On the other
     /// hand, seeding a simple numerical generator from another of the same
     /// type sometimes has serious side effects such as effectively cloning the
     /// generator.
-    fn from_rng<R: Rng+?Sized>(rng: &mut R) -> Self;
+    fn from_rng<R: Rng+?Sized>(rng: &mut R) -> Result<Self, CryptoError>;
 }
 
 /// Support mechanism for creating random number generators securely seeded
@@ -430,7 +430,7 @@ pub trait NewRng: Sized {
 impl<R: FromRng> NewRng for R {
     fn new() -> Result<Self, CryptoError> {
         let mut r = OsRng::new()?;
-        Ok(Self::from_rng(&mut r))
+        Self::from_rng(&mut r)
     }
 }
 
@@ -581,12 +581,12 @@ impl<T> ConstRng<T> {
 }
 
 impl Rng for ConstRng<u32> {
-    fn next_u32(&mut self) -> u32 { self.v }
+    fn next_u32(&mut self) -> Result<u32, CryptoError> { Ok(self.v) }
 }
 
 impl Rng for ConstRng<u64> {
-    fn next_u32(&mut self) -> u32 { self.v as u32 }
-    fn next_u64(&mut self) -> u64 { self.v }
+    fn next_u32(&mut self) -> Result<u32, CryptoError> { Ok(self.v as u32) }
+    fn next_u64(&mut self) -> Result<u64, CryptoError> { Ok(self.v) }
 }
 
 /// The standard RNG. This is designed to be efficient on the current
@@ -620,12 +620,12 @@ impl StdRng {
 
 impl Rng for StdRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         self.rng.next_u32()
     }
 
     #[inline]
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         self.rng.next_u64()
     }
 }
@@ -656,8 +656,8 @@ mod test {
     pub struct MyRng<R: ?Sized> { inner: R }
 
     impl<R: Rng+?Sized> Rng for MyRng<R> {
-        fn next_u32(&mut self) -> u32 {
-            fn next<T: Rng+?Sized>(t: &mut T) -> u32 {
+        fn next_u32(&mut self) -> Result<u32, CryptoError> {
+            fn next<T: Rng+?Sized>(t: &mut T) -> Result<u32, CryptoError> {
                 t.next_u32()
             }
             next(&mut self.inner)

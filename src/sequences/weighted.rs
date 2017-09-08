@@ -144,12 +144,12 @@ mod tests {
     #[derive(Debug)]
     struct CountingRng { i: u32 }
     impl Rng for CountingRng {
-        fn next_u32(&mut self) -> u32 {
+        fn next_u32(&mut self) -> Result<u32, CryptoError> {
             self.i += 1;
-            self.i - 1
+            Ok(self.i - 1)
         }
-        fn next_u64(&mut self) -> u64 {
-            self.next_u32() as u64
+        fn next_u64(&mut self) -> Result<u64, CryptoError> {
+            Ok(self.next_u32()? as u64)
         }
     }
 

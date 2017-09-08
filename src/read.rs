@@ -52,19 +52,19 @@ macro_rules! impl_uint_from_fill {
         assert_eq!($N, ::core::mem::size_of::<$ty>());
         let mut buf = [0u8; $N];
         fill(&mut $self.reader, &mut buf).unwrap();
-        unsafe{ *(buf.as_ptr() as *const $ty) }.to_le()
+        Ok(unsafe{ *(buf.as_ptr() as *const $ty) }.to_le())
     });
 }
 
 impl<R: Read + Debug> Rng for ReadRng<R> {
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         impl_uint_from_fill!(u32, 4, self)
     }
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         impl_uint_from_fill!(u64, 8, self)
     }
     #[cfg(feature = "i128_support")]
-    fn next_u128(&mut self) -> u128 {
+    fn next_u128(&mut self) -> Result<u128, CryptoError> {
         impl_uint_from_fill!(u128, 16, self)
     }
     
@@ -97,18 +97,18 @@ mod test {
                      0,   0, 0, 0, 0, 0, 0, 3];
         let mut rng = ReadRng::new(&v[..]);
 
-        assert_eq!(rng.next_u64(), 1_u64.to_be());
-        assert_eq!(rng.next_u64(), 2_u64.to_be());
-        assert_eq!(rng.next_u64(), 3_u64.to_be());
+        assert_eq!(rng.next_u64().unwrap(), 1_u64.to_be());
+        assert_eq!(rng.next_u64().unwrap(), 2_u64.to_be());
+        assert_eq!(rng.next_u64().unwrap(), 3_u64.to_be());
     }
     #[test]
     fn test_reader_rng_u32() {
         let v = vec![0u8, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3];
         let mut rng = ReadRng::new(&v[..]);
 
-        assert_eq!(rng.next_u32(), 1_u32.to_be());
-        assert_eq!(rng.next_u32(), 2_u32.to_be());
-        assert_eq!(rng.next_u32(), 3_u32.to_be());
+        assert_eq!(rng.next_u32().unwrap(), 1_u32.to_be());
+        assert_eq!(rng.next_u32().unwrap(), 2_u32.to_be());
+        assert_eq!(rng.next_u32().unwrap(), 3_u32.to_be());
     }
     #[test]
     fn test_reader_rng_fill_bytes() {

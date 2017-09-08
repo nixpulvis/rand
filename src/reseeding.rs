@@ -60,20 +60,20 @@ impl<R: Rng, Rsdr: Reseeder<R> + Debug> ReseedingRng<R, Rsdr> {
 
 
 impl<R: Rng, Rsdr: Reseeder<R> + Debug> Rng for ReseedingRng<R, Rsdr> {
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         self.reseed_if_necessary();
         self.bytes_generated += 4;
         self.rng.next_u32()
     }
 
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         self.reseed_if_necessary();
         self.bytes_generated += 8;
         self.rng.next_u64()
     }
 
     #[cfg(feature = "i128_support")]
-    fn next_u128(&mut self) -> u128 {
+    fn next_u128(&mut self) -> Result<u128, CryptoError> {
         self.reseed_if_necessary();
         self.bytes_generated += 16;
         self.rng.next_u128()
@@ -140,10 +140,10 @@ mod test {
     }
 
     impl Rng for Counter {
-        fn next_u32(&mut self) -> u32 {
+        fn next_u32(&mut self) -> Result<u32, CryptoError> {
             self.i += 1;
             // very random
-            self.i - 1
+            Ok(self.i - 1)
         }
     }
     impl Default for Counter {
@@ -167,7 +167,7 @@ mod test {
 
         let mut i = 0;
         for _ in 0..1000 {
-            assert_eq!(rs.next_u32(), i % 100);
+            assert_eq!(rs.next_u32().unwrap(), i % 100);
             i += 1;
         }
     }

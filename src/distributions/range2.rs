@@ -252,7 +252,7 @@ macro_rules! range_float_impl {
             }
 
             fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> Self::X {
-                let rnd = $next_u(rng);
+                let rnd = $next_u(rng).unwrap();
                 match *self {
                     RangeFloat::Positive { offset, scale } => {
                         let x: $ty = rnd.closed_open01();

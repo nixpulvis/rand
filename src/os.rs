@@ -44,15 +44,15 @@ impl OsRng {
 }
 
 impl Rng for OsRng {
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         let mut buf: [u8; 4] = [0; 4];
         self.fill_bytes(&mut buf);
-        unsafe{ *(buf.as_ptr() as *const u32) }
+        Ok(unsafe{ *(buf.as_ptr() as *const u32) })
     }
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         let mut buf: [u8; 8] = [0; 8];
         self.fill_bytes(&mut buf);
-        unsafe{ *(buf.as_ptr() as *const u64) }
+        Ok(unsafe{ *(buf.as_ptr() as *const u64) })
     }
     fn fill_bytes(&mut self, v: &mut [u8]) -> Result<(), CryptoError> {
         self.0.fill_bytes(v);

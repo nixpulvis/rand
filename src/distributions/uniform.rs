@@ -41,7 +41,7 @@ pub fn codepoint<R: Rng+?Sized>(rng: &mut R) -> char {
         // Rejection sampling. About 0.2% of numbers with at most
         // 21-bits are invalid codepoints (surrogates), so this
         // will succeed first go almost every time.
-        match char::from_u32(rng.next_u32() & CHAR_MASK) {
+        match char::from_u32(rng.next_u32().unwrap() & CHAR_MASK) {
             Some(c) => return c,
             None => {}
         }
@@ -101,28 +101,28 @@ impl Distribution<isize> for Uniform {
 impl Distribution<i8> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> i8 {
-        rng.next_u32() as i8
+        rng.next_u32().unwrap() as i8
     }
 }
 
 impl Distribution<i16> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> i16 {
-        rng.next_u32() as i16
+        rng.next_u32().unwrap() as i16
     }
 }
 
 impl Distribution<i32> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> i32 {
-        rng.next_u32() as i32
+        rng.next_u32().unwrap() as i32
     }
 }
 
 impl Distribution<i64> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> i64 {
-        rng.next_u64() as i64
+        rng.next_u64().unwrap() as i64
     }
 }
 
@@ -130,7 +130,7 @@ impl Distribution<i64> for Uniform {
 impl Distribution<i128> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> i128 {
-        rng.next_u128() as i128
+        rng.next_u128().unwrap() as i128
     }
 }
 
@@ -148,28 +148,28 @@ impl Distribution<usize> for Uniform {
 impl Distribution<u8> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> u8 {
-        rng.next_u32() as u8
+        rng.next_u32().unwrap() as u8
     }
 }
 
 impl Distribution<u16> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> u16 {
-        rng.next_u32() as u16
+        rng.next_u32().unwrap() as u16
     }
 }
 
 impl Distribution<u32> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> u32 {
-        rng.next_u32()
+        rng.next_u32().unwrap()
     }
 }
 
 impl Distribution<u64> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> u64 {
-        rng.next_u64()
+        rng.next_u64().unwrap()
     }
 }
 
@@ -177,14 +177,14 @@ impl Distribution<u64> for Uniform {
 impl Distribution<u128> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> u128 {
-        rng.next_u128()
+        rng.next_u128().unwrap()
     }
 }
 
 impl Distribution<bool> for Uniform {
     #[inline]
     fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> bool {
-        rng.next_u32() & 1 == 1
+        rng.next_u32().unwrap() & 1 == 1
     }
 }
 
@@ -192,7 +192,7 @@ macro_rules! float_impls {
     ($ty:ty, $next_u:path) => {
         impl Distribution<$ty> for Uniform01 {
             fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> $ty {
-                let x = $next_u(rng);
+                let x = $next_u(rng).unwrap();
                 x.closed_open01()
             }
         }
@@ -211,7 +211,7 @@ macro_rules! float_impls {
                 // 0.0. But 1 in 2^23 will give exactly 1.0 due to rounding.
                 // Because the chance to sample 0.0 is so low, this half-open
                 // range is a very good appoximation of a closed range.
-                let x = $next_u(rng);
+                let x = $next_u(rng).unwrap();
                 x.open_closed01()
             }
         }
@@ -223,7 +223,7 @@ macro_rules! float_impls {
             fn sample<R: Rng+?Sized>(&self, rng: &mut R) -> $ty {
                 let mut x = 0;
                 while x == 0 { // 0 converts to 0.0
-                    x = $next_u(rng);
+                    x = $next_u(rng).unwrap();
                 }
                 x.closed_open01()
             }

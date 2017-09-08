@@ -201,7 +201,7 @@ impl Clone for IsaacRng {
 
 impl Rng for IsaacRng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
         if self.cnt == 0 {
             // make some more numbers
             self.isaac();
@@ -219,7 +219,7 @@ impl Rng for IsaacRng {
         // (the % is cheaply telling the optimiser that we're always
         // in bounds, without unsafe. NB. this is a power of two, so
         // it optimises to a bitwise mask).
-        self.rsl[(self.cnt % RAND_SIZE) as usize].0
+        Ok(self.rsl[(self.cnt % RAND_SIZE) as usize].0)
     }
     
     // Default impl adjusted for native byte size; approx 18% faster in tests
@@ -231,14 +231,14 @@ impl Rng for IsaacRng {
             let (l, r) = {left}.split_at_mut(4);
             left = r;
             let chunk: [u8; 4] = unsafe {
-                transmute(self.next_u32().to_le())
+                transmute(self.next_u32()?.to_le())
             };
             l.copy_from_slice(&chunk);
         }
         let n = left.len();
         if n > 0 {
             let chunk: [u8; 4] = unsafe {
-                transmute(self.next_u32().to_le())
+                transmute(self.next_u32()?.to_le())
             };
             left.copy_from_slice(&chunk[..n]);
         }
@@ -247,13 +247,13 @@ impl Rng for IsaacRng {
 }
 
 impl FromRng for IsaacRng {
-    fn from_rng<R: Rng+?Sized>(other: &mut R) -> IsaacRng {
+    fn from_rng<R: Rng+?Sized>(other: &mut R) -> Result<IsaacRng, CryptoError> {
         let mut ret = EMPTY;
         unsafe {
             let ptr = ret.rsl.as_mut_ptr() as *mut u8;
 
             let slice = slice::from_raw_parts_mut(ptr, RAND_SIZE_USIZE * 4);
-            other.fill_bytes(slice);
+            other.fill_bytes(slice)?;
         }
         ret.cnt = 0;
         ret.a = w(0);
@@ -261,7 +261,7 @@ impl FromRng for IsaacRng {
         ret.c = w(0);
 
         ret.init(true);
-        return ret;
+        Ok(ret)
     }
 }
 
@@ -475,12 +475,12 @@ impl Clone for Isaac64Rng {
 
 impl Rng for Isaac64Rng {
     #[inline]
-    fn next_u32(&mut self) -> u32 {
-        self.next_u64() as u32
+    fn next_u32(&mut self) -> Result<u32, CryptoError> {
+        Ok(self.next_u64()? as u32)
     }
 
     #[inline]
-    fn next_u64(&mut self) -> u64 {
+    fn next_u64(&mut self) -> Result<u64, CryptoError> {
         if self.cnt == 0 {
             // make some more numbers
             self.isaac64();
@@ -490,18 +490,18 @@ impl Rng for Isaac64Rng {
         // See corresponding location in IsaacRng.next_u32 for
         // explanation.
         debug_assert!(self.cnt < RAND_SIZE_64);
-        self.rsl[(self.cnt % RAND_SIZE_64) as usize].0
+        Ok(self.rsl[(self.cnt % RAND_SIZE_64) as usize].0)
     }
 }
 
 impl FromRng for Isaac64Rng {
-    fn from_rng<R: Rng+?Sized>(other: &mut R) -> Isaac64Rng {
+    fn from_rng<R: Rng+?Sized>(other: &mut R) -> Result<Isaac64Rng, CryptoError> {
         let mut ret = EMPTY_64;
         unsafe {
             let ptr = ret.rsl.as_mut_ptr() as *mut u8;
 
             let slice = slice::from_raw_parts_mut(ptr, RAND_SIZE_64 * 8);
-            other.fill_bytes(slice);
+            other.fill_bytes(slice)?;
         }
         ret.cnt = 0;
         ret.a = w(0);
@@ -509,7 +509,7 @@ impl FromRng for Isaac64Rng {
         ret.c = w(0);
 
         ret.init(true);
-        return ret;
+        Ok(ret)
     }
 }
 
@@ -616,7 +616,7 @@ mod test {
         let seed: &[_] = &[1, 23, 456, 7890, 12345];
         let mut ra: IsaacRng = SeedableRng::from_seed(seed);
         // Regression test that isaac is actually using the above vector
-        let v = (0..10).map(|_| ra.next_u32()).collect::<Vec<_>>();
+        let v = (0..10).map(|_| ra.next_u32().unwrap()).collect::<Vec<_>>();
         assert_eq!(v,
                    vec!(2558573138, 873787463, 263499565, 2103644246, 3595684709,
                         4203127393, 264982119, 2765226902, 2737944514, 3900253796));
@@ -626,7 +626,7 @@ mod test {
         // skip forward to the 10000th number
         for _ in 0..10000 { rb.next_u32(); }
 
-        let v = (0..10).map(|_| rb.next_u32()).collect::<Vec<_>>();
+        let v = (0..10).map(|_| rb.next_u32().unwrap()).collect::<Vec<_>>();
         assert_eq!(v,
                    vec!(3676831399, 3183332890, 2834741178, 3854698763, 2717568474,
                         1576568959, 3507990155, 179069555, 141456972, 2478885421));
@@ -636,7 +636,7 @@ mod test {
         let seed: &[_] = &[1, 23, 456, 7890, 12345];
         let mut ra: Isaac64Rng = SeedableRng::from_seed(seed);
         // Regression test that isaac is actually using the above vector
-        let v = (0..10).map(|_| ra.next_u64()).collect::<Vec<_>>();
+        let v = (0..10).map(|_| ra.next_u64().unwrap()).collect::<Vec<_>>();
         assert_eq!(v,
                    vec!(547121783600835980, 14377643087320773276, 17351601304698403469,
                         1238879483818134882, 11952566807690396487, 13970131091560099343,
@@ -648,7 +648,7 @@ mod test {
         // skip forward to the 10000th number
         for _ in 0..10000 { rb.next_u64(); }
 
-        let v = (0..10).map(|_| rb.next_u64()).collect::<Vec<_>>();
+        let v = (0..10).map(|_| rb.next_u64().unwrap()).collect::<Vec<_>>();
         assert_eq!(v,
                    vec!(18143823860592706164, 8491801882678285927, 2699425367717515619,
                         17196852593171130876, 2606123525235546165, 15790932315217671084,
@@ -662,7 +662,7 @@ mod test {
         let mut rng: Isaac64Rng = SeedableRng::from_seed(seed);
         let mut clone = rng.clone();
         for _ in 0..16 {
-            assert_eq!(rng.next_u64(), clone.next_u64());
+            assert_eq!(rng.next_u64().unwrap(), clone.next_u64());
         }
     }
 }
