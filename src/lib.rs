@@ -361,7 +361,7 @@ pub trait Rng {
     /// thread_rng().fill_bytes(&mut v);
     /// println!("{:?}", &v[..]);
     /// ```
-    fn fill_bytes(&mut self, dest: &mut [u8]) {
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), CryptoError> {
         use core::intrinsics::transmute;
         
         let mut left = dest;
@@ -380,6 +380,7 @@ pub trait Rng {
             };
             left.copy_from_slice(&chunk[..n]);
         }
+        Ok(())
     }
 }
 
@@ -398,7 +399,7 @@ impl<R> Rng for Box<R> where R: Rng+?Sized {
         (**self).next_u128()
     }
 
-    fn fill_bytes(&mut self, dest: &mut [u8]) {
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), CryptoError> {
         (**self).fill_bytes(dest)
     }
 }

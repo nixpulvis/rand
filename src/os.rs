@@ -54,8 +54,9 @@ impl Rng for OsRng {
         self.fill_bytes(&mut buf);
         unsafe{ *(buf.as_ptr() as *const u64) }
     }
-    fn fill_bytes(&mut self, v: &mut [u8]) {
-        self.0.fill_bytes(v)
+    fn fill_bytes(&mut self, v: &mut [u8]) -> Result<(), CryptoError> {
+        self.0.fill_bytes(v);
+        Ok(())  // FIXME
     }
 }
 

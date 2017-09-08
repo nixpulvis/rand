@@ -17,7 +17,7 @@ use core::iter::repeat;
 use core::num::Wrapping as w;
 use core::fmt;
 
-use {Rng, FromRng, SeedableRng};
+use {Rng, FromRng, SeedableRng, CryptoError};
 
 /// Select 32- or 64-bit variant dependent on pointer size.
 #[cfg(target_pointer_width = "32")]
@@ -223,7 +223,7 @@ impl Rng for IsaacRng {
     }
     
     // Default impl adjusted for native byte size; approx 18% faster in tests
-    fn fill_bytes(&mut self, dest: &mut [u8]) {
+    fn fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), CryptoError> {
         use core::intrinsics::transmute;
         
         let mut left = dest;
@@ -242,6 +242,7 @@ impl Rng for IsaacRng {
             };
             left.copy_from_slice(&chunk[..n]);
         }
+        Ok(())
     }
 }
 
