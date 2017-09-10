@@ -224,6 +224,7 @@ mod imp {
 
     use std::io;
     use self::libc::{c_int, size_t};
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng;
@@ -259,6 +260,7 @@ mod imp {
     extern crate libc;
 
     use std::{io, ptr};
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng;
@@ -291,6 +293,7 @@ mod imp {
     extern crate libc;
 
     use std::io;
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng;
@@ -319,6 +322,7 @@ mod imp {
     use std::io;
     use std::fs::File;
     use super::ReadRng;
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng {
@@ -343,6 +347,7 @@ mod imp {
     extern crate magenta;
 
     use std::io;
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng;
@@ -368,6 +373,7 @@ mod imp {
 #[cfg(windows)]
 mod imp {
     use std::io;
+    use CryptoError;
 
     type BOOLEAN = u8;
     type ULONG = u32;
@@ -407,6 +413,7 @@ mod imp {
 
     use std::io;
     use std::mem;
+    use CryptoError;
 
     #[derive(Debug)]
     pub struct OsRng(extern fn(dest: *mut libc::c_void,
