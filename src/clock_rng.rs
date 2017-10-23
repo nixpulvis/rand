@@ -15,31 +15,26 @@ use rand_core::impls;
 use time::precise_time_ns;
 
 /// Clock-based `Rng`. Not very random.
-pub struct ClockRng {
-    high: Option<u32>,
-}
+pub struct ClockRng {}
 
 impl ClockRng {
     /// Create a `ClockRng` (very low cost)
     pub fn new() -> ClockRng {
-        ClockRng { high: None }
+        ClockRng {}
     }
 }
 
 impl Rng for ClockRng {
     fn next_u32(&mut self) -> u32 {
-        // We want to use both parts of precise_time_ns(), low part first
-        if let Some(high) = self.high.take() {
-            high
-        } else {
-            let ns = precise_time_ns();
-            self.high = Some((ns >> 32) as u32);
-            ns as u32
-        }
+        // Take only the highest-precision 32 bits (~4 sec) and throw away the
+        // rest. If using repeatedly the rest will be identical each time anyway,
+        // and is also much more predictable.
+        precise_time_ns() as u32
     }
 
     fn next_u64(&mut self) -> u64 {
-        precise_time_ns()
+        // Throw away the low-precision part and use the rest twice.
+        impls::next_u64_via_u32(self)
     }
     
     #[cfg(feature = "i128_support")]
