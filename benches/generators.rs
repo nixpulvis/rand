@@ -16,7 +16,7 @@ macro_rules! gen_bytes {
     ($fnn:ident, $gen:ident) => {
         #[bench]
         fn $fnn(b: &mut Bencher) {
-            let mut rng = $gen::new().unwrap();
+            let mut rng = $gen::try_new().unwrap();
             let mut buf = [0u8; BYTES_LEN];
             b.iter(|| {
                 for _ in 0..RAND_BENCH_N {
@@ -41,7 +41,7 @@ macro_rules! gen_usize {
     ($fnn:ident, $gen:ident) => {
         #[bench]
         fn $fnn(b: &mut Bencher) {
-            let mut rng = $gen::new().unwrap();
+            let mut rng = $gen::try_new().unwrap();
             b.iter(|| {
                 for _ in 0..RAND_BENCH_N {
                     black_box(usize::rand(&mut rng, Default));
@@ -63,7 +63,7 @@ macro_rules! init_gen {
     ($fnn:ident, $gen:ident) => {
         #[bench]
         fn $fnn(b: &mut Bencher) {
-            let mut rng = XorShiftRng::new().unwrap();
+            let mut rng = XorShiftRng::try_new().unwrap();
             b.iter(|| {
                 for _ in 0..RAND_BENCH_N {
                     black_box($gen::from_rng(&mut rng).unwrap());

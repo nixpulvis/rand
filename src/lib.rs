@@ -254,6 +254,7 @@
 extern crate core;
 
 extern crate rand_core;
+extern crate time;
 
 pub use rand_core::{Rng, CryptoRng, SeedFromRng, SeedableRng, Error, ErrorKind};
 
@@ -268,6 +269,10 @@ pub use thread_local::{ThreadRng, thread_rng, random, random_with};
 
 use prng::IsaacWordRng;
 use distributions::range::Range;
+
+// TODO: should we export this?
+#[cfg(feature="std")]   // not needed otherwise
+mod clock_rng;
 
 pub mod distributions;
 pub mod iter;
@@ -294,14 +299,37 @@ mod thread_local;
 #[cfg(feature="std")]
 pub trait NewSeeded: Sized {
     /// Creates a new instance, automatically seeded via `OsRng`.
-    fn new() -> Result<Self, Error>;
+    fn try_new() -> Result<Self, Error>;
+    
+    /// Creates a new instance. If possible, this will just use `try_new` to
+    /// get entropy from `OsRng`; if not, it will use the system clock for
+    /// entropy.
+    /// 
+    /// Do not use this method for cryptography or anything requiring secure
+    /// random numbers.
+    /// 
+    /// This method can in theory panic, depending on the RNG being created,
+    /// but normally it shouldn't (SeedFromRng::from_rng is allowed to return
+    /// an error, but this would normally only happen if the source RNG errors;
+    /// the one used here does not).
+    fn new_with_fallback() -> Self;
 }
 
 #[cfg(feature="std")]
 impl<R: SeedFromRng> NewSeeded for R {
-    fn new() -> Result<Self, Error> {
-        let mut r = OsRng::new()?;
-        Self::from_rng(&mut r)
+    fn try_new() -> Result<Self, Error> {
+        let mut src = OsRng::try_new()?;
+        Self::from_rng(&mut src)
+    }
+    fn new_with_fallback() -> Self {
+        match Self::try_new() {
+            Ok(result) => result,
+            Err(_) => {
+                let mut src = clock_rng::ClockRng::new();
+                Self::from_rng(&mut src).unwrap_or_else(|e|
+                    panic!("Seeding from clock failed: {}", e))
+            }
+        }
     }
 }
 
