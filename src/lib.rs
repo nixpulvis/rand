@@ -254,7 +254,6 @@
 extern crate core;
 
 extern crate rand_core;
-extern crate time;
 
 pub use rand_core::{Rng, CryptoRng, SeedFromRng, SeedableRng, Error, ErrorKind};
 

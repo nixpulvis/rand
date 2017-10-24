@@ -21,7 +21,6 @@ i128_support = ["rand_core/i128_support"]
 
 [dependencies]
 libc = "0.2"
-time = "0.1"
 rand_core = { path = 'rand_core' }
 
 [target.'cfg(target_os = "fuchsia")'.dependencies]
