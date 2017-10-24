@@ -9,14 +9,14 @@ const BYTES_LEN: usize = 1024;
 use std::mem::size_of;
 use test::{black_box, Bencher};
 
-use rand::{Rng, NewSeeded, SeedFromRng, StdRng, OsRng, Rand, Default};
+use rand::{Rng, NewSeeded, SeedFromRng, StdRng, ClockRng, OsRng, Rand, Default};
 use rand::prng::{XorShiftRng, IsaacRng, Isaac64Rng, ChaChaRng};
 
 macro_rules! gen_bytes {
-    ($fnn:ident, $gen:ident) => {
+    ($fnn:ident, $gen:expr) => {
         #[bench]
         fn $fnn(b: &mut Bencher) {
-            let mut rng = $gen::try_new().unwrap();
+            let mut rng = $gen;
             let mut buf = [0u8; BYTES_LEN];
             b.iter(|| {
                 for _ in 0..RAND_BENCH_N {
@@ -29,19 +29,19 @@ macro_rules! gen_bytes {
     }
 }
 
-gen_bytes!(gen_bytes_xorshift, XorShiftRng);
-gen_bytes!(gen_bytes_isaac, IsaacRng);
-gen_bytes!(gen_bytes_isaac64, Isaac64Rng);
-gen_bytes!(gen_bytes_chacha, ChaChaRng);
-gen_bytes!(gen_bytes_std, StdRng);
-gen_bytes!(gen_bytes_os, OsRng);
+gen_bytes!(gen_bytes_xorshift, XorShiftRng::try_new().unwrap());
+gen_bytes!(gen_bytes_isaac, IsaacRng::try_new().unwrap());
+gen_bytes!(gen_bytes_isaac64, Isaac64Rng::try_new().unwrap());
+gen_bytes!(gen_bytes_chacha, ChaChaRng::try_new().unwrap());
+gen_bytes!(gen_bytes_std, StdRng::try_new().unwrap());
+gen_bytes!(gen_bytes_clock, ClockRng::new());
 
 
 macro_rules! gen_usize {
-    ($fnn:ident, $gen:ident) => {
+    ($fnn:ident, $gen:expr) => {
         #[bench]
         fn $fnn(b: &mut Bencher) {
-            let mut rng = $gen::try_new().unwrap();
+            let mut rng = $gen;
             b.iter(|| {
                 for _ in 0..RAND_BENCH_N {
                     black_box(usize::rand(&mut rng, Default));
@@ -52,12 +52,13 @@ macro_rules! gen_usize {
     }
 }
 
-gen_usize!(gen_usize_xorshift, XorShiftRng);
-gen_usize!(gen_usize_isaac, IsaacRng);
-gen_usize!(gen_usize_isaac64, Isaac64Rng);
-gen_usize!(gen_usize_chacha, ChaChaRng);
-gen_usize!(gen_usize_std, StdRng);
-gen_usize!(gen_usize_os, OsRng);
+gen_usize!(gen_usize_xorshift, XorShiftRng::try_new().unwrap());
+gen_usize!(gen_usize_isaac, IsaacRng::try_new().unwrap());
+gen_usize!(gen_usize_isaac64, Isaac64Rng::try_new().unwrap());
+gen_usize!(gen_usize_chacha, ChaChaRng::try_new().unwrap());
+gen_usize!(gen_usize_std, StdRng::try_new().unwrap());
+gen_usize!(gen_usize_clock, ClockRng::new());
+gen_usize!(gen_usize_os, OsRng::try_new().unwrap());
 
 macro_rules! init_gen {
     ($fnn:ident, $gen:ident) => {
@@ -78,3 +79,13 @@ init_gen!(init_isaac, IsaacRng);
 init_gen!(init_isaac64, Isaac64Rng);
 init_gen!(init_chacha, ChaChaRng);
 init_gen!(init_std, StdRng);
+
+// Differs from above in that it doesn't have a seeding rng
+#[bench]
+fn init_clock(b: &mut Bencher) {
+    b.iter(|| {
+        for _ in 0..RAND_BENCH_N {
+            black_box(ClockRng::new());
+        }
+    });
+}

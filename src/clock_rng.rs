@@ -24,6 +24,7 @@ use core::num::Wrapping as w;
 /// The time is checked once per `u32` extracted and mixed into the current
 /// state via a RNG, hence in theory long output sequences will contain slightly
 /// more entropy than short ones.
+#[derive(Debug)]
 pub struct ClockRng {
     state: w<u64>,
 }
