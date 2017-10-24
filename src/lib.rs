@@ -323,7 +323,7 @@ impl<R: SeedFromRng> NewSeeded for R {
         match Self::try_new() {
             Ok(result) => result,
             Err(_) => {
-                let mut src = clock_rng::ClockRng::new();
+                let mut src = clock_rng::ClockRng::new(32);
                 Self::from_rng(&mut src).unwrap_or_else(|e|
                     panic!("Seeding from clock failed: {}", e))
             }

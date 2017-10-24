@@ -32,9 +32,15 @@ pub struct ClockRng {
 impl ClockRng {
     /// Create a `ClockRng`, and call `advance` a few times to improve initial
     /// endianness.
-    pub fn new() -> ClockRng {
+    /// 
+    /// The number of `rounds` used during initialisation may be specified.
+    /// Recommended to use at least 2, and up to 32 for "best" initialisation
+    /// (using an estimate of 2-4 bits entropy per round, over 64 bits of state),
+    /// but any number (including 0) can be used.
+    /// Has some impact on init time.
+    pub fn new(rounds: usize) -> ClockRng {
         let mut r = ClockRng { state: w(0) };
-        for _ in 0..10 { r.advance(); }
+        for _ in 0..rounds { r.advance(); }
         r
     }
     
@@ -96,8 +102,8 @@ mod test {
     
     #[test]
     fn distinct() {
-        let mut c1 = ClockRng::new();
-        let mut c2 = ClockRng::new();
+        let mut c1 = ClockRng::new(0);
+        let mut c2 = ClockRng::new(0);
         // probabilistic; very small chance of accidental failure
         assert!(c1.next_u64() != c2.next_u64());
     }

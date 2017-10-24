@@ -34,7 +34,7 @@ gen_bytes!(gen_bytes_isaac, IsaacRng::try_new().unwrap());
 gen_bytes!(gen_bytes_isaac64, Isaac64Rng::try_new().unwrap());
 gen_bytes!(gen_bytes_chacha, ChaChaRng::try_new().unwrap());
 gen_bytes!(gen_bytes_std, StdRng::try_new().unwrap());
-gen_bytes!(gen_bytes_clock, ClockRng::new());
+gen_bytes!(gen_bytes_clock, ClockRng::new(2));
 
 
 macro_rules! gen_usize {
@@ -57,7 +57,7 @@ gen_usize!(gen_usize_isaac, IsaacRng::try_new().unwrap());
 gen_usize!(gen_usize_isaac64, Isaac64Rng::try_new().unwrap());
 gen_usize!(gen_usize_chacha, ChaChaRng::try_new().unwrap());
 gen_usize!(gen_usize_std, StdRng::try_new().unwrap());
-gen_usize!(gen_usize_clock, ClockRng::new());
+gen_usize!(gen_usize_clock, ClockRng::new(2));
 gen_usize!(gen_usize_os, OsRng::try_new().unwrap());
 
 macro_rules! init_gen {
@@ -82,10 +82,42 @@ init_gen!(init_std, StdRng);
 
 // Differs from above in that it doesn't have a seeding rng
 #[bench]
-fn init_clock(b: &mut Bencher) {
+fn init_clock0(b: &mut Bencher) {
     b.iter(|| {
         for _ in 0..RAND_BENCH_N {
-            black_box(ClockRng::new());
+            black_box(ClockRng::new(0));
+        }
+    });
+}
+#[bench]
+fn init_clock2(b: &mut Bencher) {
+    b.iter(|| {
+        for _ in 0..RAND_BENCH_N {
+            black_box(ClockRng::new(2));
+        }
+    });
+}
+#[bench]
+fn init_clock12(b: &mut Bencher) {
+    b.iter(|| {
+        for _ in 0..RAND_BENCH_N {
+            black_box(ClockRng::new(12));
+        }
+    });
+}
+#[bench]
+fn init_clock20(b: &mut Bencher) {
+    b.iter(|| {
+        for _ in 0..RAND_BENCH_N {
+            black_box(ClockRng::new(20));
+        }
+    });
+}
+#[bench]
+fn init_clock32(b: &mut Bencher) {
+    b.iter(|| {
+        for _ in 0..RAND_BENCH_N {
+            black_box(ClockRng::new(32));
         }
     });
 }
