@@ -87,6 +87,75 @@ impl Rng for ClockRng {
     }
 }
 
+/// "Strong" clock-based RNG (slow but suitable for initialising PRNGs)
+///
+/// [Limited experiments](https://github.com/dhardy/estimate-entropy),
+/// show roughly 1-3 bits of entropy per use of the high-resolution timer,
+/// even in a tight loop, and also no observable bias.
+/// This "RNG" exploits that by invoking the timer for every 2 bits of required
+/// output.
+/// 
+/// I will not recommend randomness based off of the system timer for
+/// cryptography (in part because I don't know whether your timer behaves the
+/// same as the ones I have tested, in part because this may be more vulnable
+/// to side-channel attacks), but this should be fairly strong.
+/// 
+/// Performance is terrible (approx 1/16th of `ClockRng`, which is itself
+/// around 1/4 the speed of `ChaChaRng`), but this shouldn't matter for small
+/// amounts of data (e.g. initialising a PRNG).
+/// 
+/// ## Example
+/// 
+/// ```rust
+/// use rand::{StrongClockRng, SeedFromRng};
+/// use rand::prng::ChaChaRng;
+/// 
+/// let mut rng = ChaChaRng::from_rng(StrongClockRng::new());
+/// ```
+#[derive(Debug)]
+pub struct StrongClockRng {}
+
+impl StrongClockRng {
+    /// Create an instance
+    pub fn new() -> StrongClockRng {
+        StrongClockRng {}
+    }
+}
+
+macro_rules! gen_strong {
+    ($ty:ty, $rounds:expr) => {{
+        let mut x: $ty = 0;
+        for _ in 0..$rounds {
+            x <<= 2;
+            x ^= get_time() as $ty;
+        }
+        x
+    }}
+}
+
+impl Rng for StrongClockRng {
+    fn next_u32(&mut self) -> u32 {
+        gen_strong!(u32, 16)
+    }
+
+    fn next_u64(&mut self) -> u64 {
+        gen_strong!(u64, 32)
+    }
+    
+    #[cfg(feature = "i128_support")]
+    fn next_u128(&mut self) -> u128 {
+        gen_strong!(u128, 64)
+    }
+    
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        impls::fill_bytes_via_u64(self, dest)
+    }
+
+    fn try_fill(&mut self, dest: &mut [u8]) -> Result<(), Error> {
+        Ok(self.fill_bytes(dest))
+    }
+}
+
 fn get_time() -> u64 {
     use std::time::{SystemTime, UNIX_EPOCH};
     
@@ -94,11 +163,10 @@ fn get_time() -> u64 {
     dur.as_secs() * 1_000_000_000 + dur.subsec_nanos() as u64
 }
 
-
 #[cfg(test)]
 mod test {
     use Rng;
-    use super::ClockRng;
+    use super::{ClockRng, StrongClockRng};
     
     #[test]
     fn distinct() {
@@ -106,5 +174,17 @@ mod test {
         let mut c2 = ClockRng::new(0);
         // probabilistic; very small chance of accidental failure
         assert!(c1.next_u64() != c2.next_u64());
+    }
+    
+    #[test]
+    fn strong() {
+        let mut r = StrongClockRng::new();
+        r.next_u32();
+        r.next_u64();
+        #[cfg(feature = "i128_support")]
+        r.next_u128();
+        
+        // probabilistic; very small chance of accidental failure
+        assert!(r.next_u64() != r.next_u64());
     }
 }

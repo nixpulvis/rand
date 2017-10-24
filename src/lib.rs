@@ -257,7 +257,7 @@ extern crate rand_core;
 
 pub use rand_core::{Rng, CryptoRng, SeedFromRng, SeedableRng, Error, ErrorKind};
 
-pub use clock_rng::ClockRng;
+pub use clock_rng::{ClockRng, StrongClockRng};
 #[cfg(feature="std")]
 pub use read::ReadRng;
 #[cfg(feature="std")]

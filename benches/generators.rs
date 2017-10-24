@@ -9,7 +9,8 @@ const BYTES_LEN: usize = 1024;
 use std::mem::size_of;
 use test::{black_box, Bencher};
 
-use rand::{Rng, NewSeeded, SeedFromRng, StdRng, ClockRng, OsRng, Rand, Default};
+use rand::{Rng, NewSeeded, SeedFromRng, StdRng, ClockRng, StrongClockRng,
+    OsRng, Rand, Default};
 use rand::prng::{XorShiftRng, IsaacRng, Isaac64Rng, ChaChaRng};
 
 macro_rules! gen_bytes {
@@ -35,6 +36,7 @@ gen_bytes!(gen_bytes_isaac64, Isaac64Rng::try_new().unwrap());
 gen_bytes!(gen_bytes_chacha, ChaChaRng::try_new().unwrap());
 gen_bytes!(gen_bytes_std, StdRng::try_new().unwrap());
 gen_bytes!(gen_bytes_clock, ClockRng::new(2));
+gen_bytes!(gen_bytes_strongclock, StrongClockRng::new());
 
 
 macro_rules! gen_usize {
@@ -59,6 +61,7 @@ gen_usize!(gen_usize_chacha, ChaChaRng::try_new().unwrap());
 gen_usize!(gen_usize_std, StdRng::try_new().unwrap());
 gen_usize!(gen_usize_clock, ClockRng::new(2));
 gen_usize!(gen_usize_os, OsRng::try_new().unwrap());
+gen_usize!(gen_usize_strongclock, StrongClockRng::new());
 
 macro_rules! init_gen {
     ($fnn:ident, $gen:ident) => {
