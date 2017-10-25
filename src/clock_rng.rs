@@ -122,29 +122,38 @@ impl StrongClockRng {
     }
 }
 
-macro_rules! gen_strong {
-    ($ty:ty, $rounds:expr) => {{
-        let mut x: $ty = 0;
-        for _ in 0..$rounds {
-            x <<= 2;
-            x ^= get_time() as $ty;
-        }
-        x
-    }}
-}
-
 impl Rng for StrongClockRng {
     fn next_u32(&mut self) -> u32 {
-        gen_strong!(u32, 16)
+        // Experiments show 4-5.5 bits per call, almost exclusively in the last
+        // 8 bits. So we can ignore the high-order stuff. Use double what we
+        // need and do some mixing.
+        let a = w(get_nanos() ^ (get_nanos() << 8) ^
+            (get_nanos() << 16) ^ (get_nanos() << 24));
+        let b = w(get_nanos() ^ (get_nanos() << 8) ^
+            (get_nanos() << 16) ^ (get_nanos() << 24));
+        
+        (a * w(867850457) + a * w(3073211807) +
+        b * w(3008088109) + b * w(4097541745)).0
     }
 
     fn next_u64(&mut self) -> u64 {
-        gen_strong!(u64, 32)
+        // Same principle as next_u32, but with different constants.
+        let a = w(get_nanos64() ^ (get_nanos64() << 8) ^
+            (get_nanos64() << 16) ^ (get_nanos64() << 24) ^
+            (get_nanos64() << 32) ^ (get_nanos64() << 40) ^
+            (get_nanos64() << 48) ^ (get_nanos64() << 56));
+        let b = w(get_nanos64() ^ (get_nanos64() << 8) ^
+            (get_nanos64() << 16) ^ (get_nanos64() << 24) ^
+            (get_nanos64() << 32) ^ (get_nanos64() << 40) ^
+            (get_nanos64() << 48) ^ (get_nanos64() << 56));
+        
+        (a * w(988868490075816773) + a * w(9677555830353064821) +
+        b * w(15019246847900914081) + b * w(2632891317968328867)).0
     }
     
     #[cfg(feature = "i128_support")]
     fn next_u128(&mut self) -> u128 {
-        gen_strong!(u128, 64)
+        impls::next_u128_via_u64(self)
     }
     
     fn fill_bytes(&mut self, dest: &mut [u8]) {
@@ -161,6 +170,16 @@ fn get_time() -> u64 {
     
     let dur = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
     dur.as_secs() * 1_000_000_000 + dur.subsec_nanos() as u64
+}
+
+fn get_nanos() -> u32 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    
+    let dur = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+    dur.subsec_nanos()
+}
+fn get_nanos64() -> u64 {
+    get_nanos() as u64
 }
 
 #[cfg(test)]

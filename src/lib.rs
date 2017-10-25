@@ -257,6 +257,7 @@ extern crate rand_core;
 
 pub use rand_core::{Rng, CryptoRng, SeedFromRng, SeedableRng, Error, ErrorKind};
 
+#[cfg(feature="std")]
 pub use clock_rng::{ClockRng, StrongClockRng};
 #[cfg(feature="std")]
 pub use read::ReadRng;
@@ -270,6 +271,7 @@ pub use thread_local::{ThreadRng, thread_rng, random, random_with};
 use prng::IsaacWordRng;
 use distributions::range::Range;
 
+#[cfg(feature="std")]
 mod clock_rng;
 
 pub mod distributions;
