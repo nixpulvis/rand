@@ -253,7 +253,7 @@ impl ErrorKind {
             ErrorKind::Unavailable => "permanent failure or unavailable",
             ErrorKind::Transient => "transient failure",
             ErrorKind::NotReady => "not ready yet",
-            ErrorKind::Other => "uncategorised error",
+            ErrorKind::Other => "uncategorised",
             ErrorKind::__Nonexhaustive => unreachable!(),
         }
     }
@@ -274,14 +274,12 @@ impl fmt::Display for ErrorDetails {
     }
 }
 
-// Impl is only used for ErrorDetails::Str case, but can't implement for an enum case
 #[cfg(feature="std")]
 impl ::std::error::Error for ErrorDetails {
     fn description(&self) -> &str {
         match *self {
-            ErrorDetails::None => "NA", // case shouldn't be used
             ErrorDetails::Str(ref s) => s,
-            ErrorDetails::Error(ref e) => e.description(),
+            _ => unreachable!(),
         }
     }
     
@@ -320,10 +318,10 @@ impl Error {
         Self { kind, details: ErrorDetails::Error(cause.into()) }
     }
     
-    /// Get a description of the details (from str or description of chained
-    /// error).
+    /// Get details on the error, if available (string message or chained
+    /// "cause").
     /// 
-    /// In the case of a chained error, the actual error may be obtained via
+    /// In the case of a chained error, the actual error can be obtained with
     /// `std::error::Error::cause`.
     pub fn details(&self) -> Option<&str> {
         match self.details {
@@ -336,7 +334,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "RNG {}", self.kind.description())
+        write!(f, "RNG error: {}", self.kind.description())
     }
 }
 
