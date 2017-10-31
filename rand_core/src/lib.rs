@@ -247,55 +247,91 @@ pub enum ErrorKind {
     __Nonexhaustive,
 }
 
-#[cfg(feature="std")]
-#[derive(Debug)]
-pub struct Error {
-    pub kind: ErrorKind,
-    pub cause: Option<Box<std::error::Error>>,
+impl ErrorKind {
+    pub fn description(&self) -> &'static str {
+        match *self {
+            ErrorKind::Unavailable => "permanent failure or unavailable",
+            ErrorKind::Transient => "transient failure",
+            ErrorKind::NotReady => "not ready yet",
+            ErrorKind::Other => "uncategorised error",
+            ErrorKind::__Nonexhaustive => unreachable!(),
+        }
+    }
 }
 
-#[cfg(not(feature="std"))]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug)]
+enum ErrorDetails {
+    None,
+    Str(&'static str),
+    #[cfg(feature="std")]
+    Error(Box<std::error::Error + Send + Sync>),
+}
+
+/// Error type of random number generators
+/// 
+/// This embeds two things, an `ErrorKind`, which can be matched over, and
+/// optional details provided to `new_str` or `new_err`.
+#[derive(Debug)]
 pub struct Error {
+    /// Error kind
     pub kind: ErrorKind,
-    pub cause: Option<&'static str>,
+    details: ErrorDetails,
 }
 
 impl Error {
+    /// Create a new instance, with no details.
+    pub fn new(kind: ErrorKind) -> Self {
+        Self { kind, details: ErrorDetails::None }
+    }
+    
+    /// Create a new instance, with a static string describing the details.
+    /// 
+    /// This may be used in both `std` and `no_std` enviroments.
+    pub fn new_str(kind: ErrorKind, details: &'static str) -> Self {
+        Self { kind, details: ErrorDetails::Str(details) }
+    }
+    
+    /// Create a new instance, with a chained `Error` cause.
     #[cfg(feature="std")]
-    pub fn new(kind: ErrorKind, cause: Option<Box<std::error::Error>>) -> Error {
-        Error {
-            kind: kind,
-            cause: cause,
+    pub fn new_err<E>(kind: ErrorKind, cause: E) -> Self
+        where E: Into<Box<std::error::Error + Send + Sync>>
+    {
+        Self { kind, details: ErrorDetails::Error(cause.into()) }
+    }
+    
+    /// Get a description of the details (from str or description of chained
+    /// error).
+    /// 
+    /// In the case of a chained error, the actual error may be obtained via
+    /// `std::error::Error::cause`.
+    pub fn details(&self) -> Option<&str> {
+        match self.details {
+            ErrorDetails::None => None,
+            ErrorDetails::Str(ref s) => Some(s),
+            ErrorDetails::Error(ref e) => Some(e.description()),
         }
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.kind {
-            ErrorKind::Unavailable => write!(f, "RNG not available."),
-            ErrorKind::Transient => write!(f, "RNG has failed, probably temporary."),
-            ErrorKind::NotReady => write!(f, "RNG not ready yet."),
-            ErrorKind::Other => write!(f, "An unspecified RNG error occurred."),
-            ErrorKind::__Nonexhaustive => unreachable!(),
-        }
+        write!(f, "RNG {} (details: {})",
+            self.kind.description(),
+            self.details().unwrap_or("NA"))
     }
 }
 
 #[cfg(feature="std")]
 impl ::std::error::Error for Error {
     fn description(&self) -> &str {
-        match self.kind {
-            ErrorKind::Unavailable => "not available",
-            ErrorKind::Transient => "temporary failure",
-            ErrorKind::NotReady => "not ready yet",
-            ErrorKind::Other => "Uncategorised rng error",
-            ErrorKind::__Nonexhaustive => unreachable!(),
-        }
+        self.kind.description()
     }
 
     fn cause(&self) -> Option<&::std::error::Error> {
-        self.cause.as_ref().map(|e| &**e)
+        match self.details {
+            ErrorDetails::Error(ref e) => Some(&**e),
+            // unforunately we cannot report &str cause here
+            _ => None,
+        }
     }
 }
