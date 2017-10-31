@@ -267,6 +267,27 @@ enum ErrorDetails {
     Error(Box<std::error::Error + Send + Sync>),
 }
 
+impl fmt::Display for ErrorDetails {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use ::std::error::Error;
+        write!(f, "{}", self.description())
+    }
+}
+
+// Impl is only used for ErrorDetails::Str case, but can't implement for an enum case
+#[cfg(feature="std")]
+impl ::std::error::Error for ErrorDetails {
+    fn description(&self) -> &str {
+        match *self {
+            ErrorDetails::None => "NA", // case shouldn't be used
+            ErrorDetails::Str(ref s) => s,
+            ErrorDetails::Error(ref e) => e.description(),
+        }
+    }
+    
+    // no cause: Error case gets unwrapped by impl for Error
+}
+
 /// Error type of random number generators
 /// 
 /// This embeds two things, an `ErrorKind`, which can be matched over, and
@@ -315,9 +336,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "RNG {} (details: {})",
-            self.kind.description(),
-            self.details().unwrap_or("NA"))
+        write!(f, "RNG {}", self.kind.description())
     }
 }
 
@@ -329,9 +348,37 @@ impl ::std::error::Error for Error {
 
     fn cause(&self) -> Option<&::std::error::Error> {
         match self.details {
+            ErrorDetails::None => None,
+            // use a trick: implement Error for ErrorDetails
+            ErrorDetails::Str(_) => Some(&self.details),
             ErrorDetails::Error(ref e) => Some(&**e),
-            // unforunately we cannot report &str cause here
-            _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::ErrorKind;
+    use std::error::Error;  // for description() and cause() functions
+    
+    #[test]
+    fn description() {
+        let kind = ErrorKind::NotReady;
+        let err = super::Error::new_str(kind, "abc");
+        assert_eq!(kind.description(), err.description());
+    }
+    
+    #[test]
+    fn cause() {
+        let kind = ErrorKind::NotReady;
+        let err = super::Error::new_str(kind, "abc");   // static string
+        assert_eq!(err.details(), Some("abc"));
+        assert_eq!(err.cause().map(|e| e.description()), Some("abc"));
+        
+        assert_eq!(super::Error::new(kind).details(), None);
+        
+        let err = super::Error::new_err(kind, "def");   // automatically boxed
+        assert_eq!(err.details(), Some("def"));
+        assert_eq!(err.cause().map(|e| e.description()), Some("def"));
     }
 }
