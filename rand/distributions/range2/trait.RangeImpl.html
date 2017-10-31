@@ -48,11 +48,11 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rand/distributions/range2.rs.html#120-132' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rand/distributions/range2.rs.html#88-100' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait RangeImpl {
     type <a href='#associatedtype.X' class="type">X</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html" title="trait core::cmp::PartialOrd">PartialOrd</a>;
-    fn <a href='#tymethod.new' class='fnname'>new</a>(low: Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a>, high: Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a>) -&gt; Self;
-    fn <a href='#tymethod.sample' class='fnname'>sample</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(&amp;self, rng: &amp;mut R) -&gt; Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a>;
+    fn <a href='#tymethod.new' class='fnname'>new</a>(low: Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a>, high: Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a>) -&gt; Self;
+<div class='item-spacer'></div>    fn <a href='#tymethod.sample' class='fnname'>sample</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(&amp;self, rng: &amp;mut R) -&gt; Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a>;
 }</pre><div class='docblock'><p>Helper trait handling actual range sampling.</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
@@ -61,11 +61,11 @@
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#tymethod.new' class='fnname'>new</a>(low: Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a>, high: Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a>) -&gt; Self</code></span></h3><div class='docblock'><p>Construct self.</p>
+        <h3 id='tymethod.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#tymethod.new' class='fnname'>new</a>(low: Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a>, high: Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a>) -&gt; Self</code></span></h3><div class='docblock'><p>Construct self.</p>
 
 <p>This should not be called directly. <code>Range::new</code> asserts that
 <code>low &lt; high</code> before calling this.</p>
-</div><h3 id='tymethod.sample' class='method'><span id='sample.v' class='invisible'><code>fn <a href='#tymethod.sample' class='fnname'>sample</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(&amp;self, rng: &amp;mut R) -&gt; Self::<a class="trait" href="../../../rand/distributions/range2/trait.RangeImpl.html" title="trait rand::distributions::range2::RangeImpl">X</a></code></span></h3><div class='docblock'><p>Sample a value.</p>
+</div><h3 id='tymethod.sample' class='method'><span id='sample.v' class='invisible'><code>fn <a href='#tymethod.sample' class='fnname'>sample</a>&lt;R:&nbsp;<a class="trait" href="../../../rand/trait.Rng.html" title="trait rand::Rng">Rng</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt;(&amp;self, rng: &amp;mut R) -&gt; Self::<a class="type" href="../../../rand/distributions/range2/trait.RangeImpl.html#associatedtype.X" title="type rand::distributions::range2::RangeImpl::X">X</a></code></span></h3><div class='docblock'><p>Sample a value.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
@@ -79,8 +79,8 @@
 <li><code>impl RangeImpl for <a class="struct" href="../../../rand/distributions/range2/struct.RangeInt.html" title="struct rand::distributions::range2::RangeInt">RangeInt</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>&gt;</code></li>
 <li><code>impl RangeImpl for <a class="struct" href="../../../rand/distributions/range2/struct.RangeInt.html" title="struct rand::distributions::range2::RangeInt">RangeInt</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a>&gt;</code></li>
 <li><code>impl RangeImpl for <a class="struct" href="../../../rand/distributions/range2/struct.RangeInt.html" title="struct rand::distributions::range2::RangeInt">RangeInt</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt;</code></li>
-<li><code>impl RangeImpl for <a class="struct" href="../../../rand/distributions/range2/struct.RangeFloat.html" title="struct rand::distributions::range2::RangeFloat">RangeFloat</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;</code></li>
-<li><code>impl RangeImpl for <a class="struct" href="../../../rand/distributions/range2/struct.RangeFloat.html" title="struct rand::distributions::range2::RangeFloat">RangeFloat</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>&gt;</code></li>
+<li><code>impl RangeImpl for <a class="enum" href="../../../rand/distributions/range2/enum.RangeFloat.html" title="enum rand::distributions::range2::RangeFloat">RangeFloat</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a>&gt;</code></li>
+<li><code>impl RangeImpl for <a class="enum" href="../../../rand/distributions/range2/enum.RangeFloat.html" title="enum rand::distributions::range2::RangeFloat">RangeFloat</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>&gt;</code></li>
 </ul><script type="text/javascript" async
                          src="../../../implementors/rand/distributions/range2/trait.RangeImpl.js">
                  </script></section>

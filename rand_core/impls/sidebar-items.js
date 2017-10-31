@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["fill_bytes_via_u32","Implement `fill_bytes` via `next_u32`, little-endian order."],["fill_bytes_via_u64","Implement `fill_bytes` via `next_u64`, little-endian order."],["next_u32_via_fill",""],["next_u64_via_fill",""],["next_u64_via_u32","Implement `next_u64` via `next_u32`, little-endian order."]]});

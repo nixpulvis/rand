@@ -95,6 +95,10 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -143,10 +147,14 @@
 
 <span class="kw">mod</span> <span class="ident">chacha</span>;
 <span class="kw">mod</span> <span class="ident">isaac</span>;
+<span class="kw">mod</span> <span class="ident">isaac64</span>;
+<span class="kw">mod</span> <span class="ident">isaac_word</span>;
 <span class="kw">mod</span> <span class="ident">xorshift</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">chacha</span>::<span class="ident">ChaChaRng</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">isaac</span>::{<span class="ident">IsaacRng</span>, <span class="ident">Isaac64Rng</span>, <span class="ident">IsaacWordRng</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">isaac</span>::<span class="ident">IsaacRng</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">isaac64</span>::<span class="ident">Isaac64Rng</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">isaac_word</span>::<span class="ident">IsaacWordRng</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">xorshift</span>::<span class="ident">XorShiftRng</span>;
 </pre>
 </section>

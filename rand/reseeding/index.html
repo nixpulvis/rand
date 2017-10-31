@@ -48,17 +48,16 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rand/reseeding.rs.html#11-234' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rand/reseeding.rs.html#11-188' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>A wrapper around another RNG that reseeds it after it
 generates a certain number of random bytes.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.ReseedWithDefault.html"
-                                  title='struct rand::reseeding::ReseedWithDefault'>ReseedWithDefault</a></td>
+                           <td><a class="struct" href="struct.ReseedWithNew.html"
+                                  title='struct rand::reseeding::ReseedWithNew'>ReseedWithNew</a></td>
                            <td class='docblock-short'>
-                                <p>Reseed an RNG using a <code>Default</code> instance. This reseeds by
-replacing the RNG with the result of a <code>Default::default</code> call.</p>
+                                <p>Reseed an RNG using <code>NewSeeded</code> to replace the current instance.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

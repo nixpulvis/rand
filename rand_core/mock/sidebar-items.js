@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["MockAddRng","A simple implementation of `Rng`, purely for testing. Returns an arithmetic sequence (i.e. adds a constant each step)."]]});

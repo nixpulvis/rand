@@ -279,7 +279,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">default</span>::<span class="ident">Default</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">uniform</span>::{<span class="ident">uniform</span>, <span class="ident">codepoint</span>, <span class="ident">ascii_word_char</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">uniform</span>::{<span class="ident">Uniform</span>, <span class="ident">Uniform01</span>, <span class="ident">Open01</span>, <span class="ident">Closed01</span>, <span class="ident">AsciiWordChar</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">range</span>::{<span class="ident">range</span>, <span class="ident">Range</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">range</span>::<span class="ident">Range</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">gamma</span>::{<span class="ident">Gamma</span>, <span class="ident">ChiSquared</span>, <span class="ident">FisherF</span>, <span class="ident">StudentT</span>};
@@ -288,13 +288,14 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">exponential</span>::<span class="ident">Exp</span>;
 
+<span class="kw">use</span> <span class="ident">Sample</span>;
+
 <span class="kw">mod</span> <span class="ident">default</span>;
 <span class="kw">mod</span> <span class="ident">uniform</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">ziggurat_tables</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">range2</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gamma</span>;
@@ -319,7 +320,7 @@
 <span class="doccomment">/// println!(&quot;{}&quot;, weighted_bool(3, &amp;mut rng));</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weighted_bool</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span><span class="op">+</span><span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="ident">n</span>: <span class="ident">u32</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="ident">n</span> <span class="op">&lt;=</span> <span class="number">1</span> <span class="op">||</span> <span class="ident">range</span>(<span class="number">0</span>, <span class="ident">n</span>, <span class="ident">rng</span>) <span class="op">==</span> <span class="number">0</span>
+    <span class="ident">n</span> <span class="op">&lt;=</span> <span class="number">1</span> <span class="op">||</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="ident">n</span>) <span class="op">==</span> <span class="number">0</span>
 }
 
 <span class="doccomment">/// Types (distributions) that can be used to create a random instance of `T`.</span>
@@ -413,28 +414,27 @@
             <span class="kw-2">mut</span> <span class="ident">pdf</span>: <span class="ident">P</span>,
             <span class="kw-2">mut</span> <span class="ident">zero_case</span>: <span class="ident">Z</span>)
             <span class="op">-&gt;</span> <span class="ident">f64</span> <span class="kw">where</span> <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>, <span class="ident">Z</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>, <span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
-    <span class="kw">const</span> <span class="ident">SCALE</span>: <span class="ident">f64</span> <span class="op">=</span> (<span class="number">1u64</span> <span class="op">&lt;&lt;</span> <span class="number">53</span>) <span class="kw">as</span> <span class="ident">f64</span>;
+    <span class="kw">use</span> <span class="ident">utils</span>::<span class="ident">FloatConversions</span>;
+    
     <span class="kw">loop</span> {
-        <span class="comment">// reimplement the f64 generation as an optimisation suggested</span>
-        <span class="comment">// by the Doornik paper: we have a lot of precision-space</span>
-        <span class="comment">// (i.e. there are 11 bits of the 64 of a u64 to use after</span>
-        <span class="comment">// creating a f64), so we might as well reuse some to save</span>
-        <span class="comment">// generating a whole extra random number. (Seems to be 15%</span>
-        <span class="comment">// faster.)</span>
-        <span class="comment">//</span>
-        <span class="comment">// This unfortunately misses out on the benefits of direct</span>
-        <span class="comment">// floating point generation if an RNG like dSMFT is</span>
-        <span class="comment">// used. (That is, such RNGs create floats directly, highly</span>
-        <span class="comment">// efficiently and overload next_f32/f64, so by not calling it</span>
-        <span class="comment">// this may be slower than it would be otherwise.)</span>
-        <span class="comment">// FIXME: investigate/optimise for the above.</span>
+        <span class="comment">// As an optimisation convert the random u64 to a f64 using only</span>
+        <span class="comment">// 53 bits, as many as will fit in the float&#39;s fraction.</span>
+        <span class="comment">// Of the remaining 11 least significant bits we use 8 to construct `i`.</span>
+        <span class="comment">// This saves us generating a whole extra random number, while the added</span>
+        <span class="comment">// precision of using 64 bits for f64 does not buy us much.</span>
         <span class="kw">let</span> <span class="ident">bits</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">uniform</span>(<span class="ident">rng</span>);
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">bits</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> (<span class="ident">bits</span> <span class="op">&gt;&gt;</span> <span class="number">11</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">/</span> <span class="ident">SCALE</span>;
 
         <span class="comment">// u is either U(-1, 1) or U(0, 1) depending on if this is a</span>
         <span class="comment">// symmetric distribution or not.</span>
-        <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">symmetric</span> {<span class="number">2.0</span> <span class="op">*</span> <span class="ident">f</span> <span class="op">-</span> <span class="number">1.0</span>} <span class="kw">else</span> {<span class="ident">f</span>};
+        <span class="comment">// FIXME: the distribution is not open, but closed-open.</span>
+        <span class="comment">//        Can that cause problems or a bias?</span>
+        <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">symmetric</span> {
+                    <span class="ident">bits</span>.<span class="ident">closed_open11_fixed</span>()
+                } <span class="kw">else</span> {
+                    <span class="ident">bits</span>.<span class="ident">closed_open01_fixed</span>()
+                };
+        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">bits</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+
         <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">u</span> <span class="op">*</span> <span class="ident">x_tab</span>[<span class="ident">i</span>];
 
         <span class="kw">let</span> <span class="ident">test_x</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">symmetric</span> { <span class="ident">x</span>.<span class="ident">abs</span>() } <span class="kw">else</span> {<span class="ident">x</span>};

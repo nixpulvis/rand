@@ -253,7 +253,6 @@
 <span id="208">208</span>
 <span id="209">209</span>
 <span id="210">210</span>
-<span id="211">211</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -267,8 +266,7 @@
 
 <span class="doccomment">//! Random operations on sequences</span>
 
-<span class="kw">use</span> <span class="ident">Rng</span>;
-<span class="kw">use</span> <span class="ident">distributions</span>::<span class="ident">range</span>;
+<span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">Sample</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span><span class="op">=</span><span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">weighted</span>::{<span class="ident">Weighted</span>, <span class="ident">WeightedChoice</span>};
@@ -301,7 +299,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">range</span>(<span class="number">0</span>, <span class="self">self</span>.<span class="ident">len</span>(), <span class="ident">rng</span>)])
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="self">self</span>.<span class="ident">len</span>())])
         }
     }
 }
@@ -312,7 +310,7 @@
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>[<span class="ident">range</span>(<span class="number">0</span>, <span class="ident">len</span>, <span class="ident">rng</span>)])
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>[<span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="ident">len</span>)])
         }
     }
 }
@@ -323,7 +321,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">range</span>(<span class="number">0</span>, <span class="self">self</span>.<span class="ident">len</span>(), <span class="ident">rng</span>);
+            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="self">self</span>.<span class="ident">len</span>());
             <span class="self">self</span>.<span class="ident">drain</span>(<span class="ident">index</span>..).<span class="ident">next</span>()
         }
     }
@@ -352,7 +350,7 @@
     <span class="comment">// continue unless the iterator was exhausted</span>
     <span class="kw">if</span> <span class="ident">reservoir</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="ident">amount</span> {
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">elem</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-            <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="ident">range</span>(<span class="number">0</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span> <span class="op">+</span> <span class="ident">amount</span>, <span class="ident">rng</span>);
+            <span class="kw">let</span> <span class="ident">k</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span> <span class="op">+</span> <span class="ident">amount</span>);
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">spot</span>) <span class="op">=</span> <span class="ident">reservoir</span>.<span class="ident">get_mut</span>(<span class="ident">k</span>) {
                 <span class="kw-2">*</span><span class="ident">spot</span> <span class="op">=</span> <span class="ident">elem</span>;
             }
@@ -391,7 +389,7 @@
             <span class="comment">// invariant: elements with index &gt;= i have been locked in place.</span>
             <span class="ident">i</span> <span class="op">-=</span> <span class="number">1</span>;
             <span class="comment">// lock element i in place.</span>
-            <span class="self">self</span>.<span class="ident">swap</span>(<span class="ident">i</span>, <span class="ident">range</span>(<span class="number">0</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">rng</span>));
+            <span class="self">self</span>.<span class="ident">swap</span>(<span class="ident">i</span>, <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="number">0</span>, <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>));
         }
     }
 }
@@ -457,7 +455,7 @@
     
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">dyn_dispatch</span>() {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Rng</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">thread_rng</span>();
+        <span class="kw">let</span> <span class="ident">r</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Rng</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">thread_rng</span>();
         
         <span class="macro">assert_eq</span><span class="macro">!</span>([<span class="number">7</span>, <span class="number">7</span>][..].<span class="ident">choose</span>(<span class="ident">r</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">7</span>));
         
