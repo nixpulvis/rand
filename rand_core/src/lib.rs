@@ -248,8 +248,25 @@ pub enum ErrorKind {
 }
 
 impl ErrorKind {
-    pub fn description(&self) -> &'static str {
-        match *self {
+    /// True if this kind of error may resolve itself on retry.
+    /// 
+    /// See also `should_wait()`.
+    pub fn should_retry(self) -> bool {
+        match self {
+            ErrorKind::Transient | ErrorKind::NotReady => true,
+            _ => false,
+        }
+    }
+    /// True if we should wait before retrying
+    pub fn should_wait(self) -> bool {
+        match self {
+            ErrorKind::NotReady => true,
+            _ => false,
+        }
+    }
+    /// A description of this error kind
+    pub fn description(self) -> &'static str {
+        match self {
             ErrorKind::Unavailable => "permanent failure or unavailable",
             ErrorKind::Transient => "transient failure",
             ErrorKind::NotReady => "not ready yet",
