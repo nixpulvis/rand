@@ -43,6 +43,9 @@
 #[cfg(feature="std")]
 extern crate core;
 
+#[cfg(feature="std")]
+use std::error::Error as stdError;
+
 use core::fmt;
 
 pub mod impls;
@@ -257,7 +260,9 @@ impl ErrorKind {
             _ => false,
         }
     }
-    /// True if we should wait before retrying
+    /// True if we should retry but wait before retrying
+    /// 
+    /// This implies `should_retry()` is true.
     pub fn should_wait(self) -> bool {
         match self {
             ErrorKind::NotReady => true,
@@ -276,33 +281,6 @@ impl ErrorKind {
     }
 }
 
-#[derive(Debug)]
-enum ErrorDetails {
-    None,
-    Str(&'static str),
-    #[cfg(feature="std")]
-    Error(Box<std::error::Error + Send + Sync>),
-}
-
-impl fmt::Display for ErrorDetails {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use ::std::error::Error;
-        write!(f, "{}", self.description())
-    }
-}
-
-#[cfg(feature="std")]
-impl ::std::error::Error for ErrorDetails {
-    fn description(&self) -> &str {
-        match *self {
-            ErrorDetails::Str(ref s) => s,
-            _ => unreachable!(),
-        }
-    }
-    
-    // no cause: Error case gets unwrapped by impl for Error
-}
-
 /// Error type of random number generators
 /// 
 /// This embeds two things, an `ErrorKind`, which can be matched over, and
@@ -311,41 +289,34 @@ impl ::std::error::Error for ErrorDetails {
 pub struct Error {
     /// Error kind
     pub kind: ErrorKind,
-    details: ErrorDetails,
+    msg: &'static str,
+    #[cfg(feature="std")]
+    cause: Option<Box<stdError + Send + Sync>>,
 }
 
 impl Error {
-    /// Create a new instance, with no details.
-    pub fn new(kind: ErrorKind) -> Self {
-        Self { kind, details: ErrorDetails::None }
-    }
-    
-    /// Create a new instance, with a static string describing the details.
+    /// Create a new instance, with specified kind, message, and optionally a
+    /// chained cause.
     /// 
-    /// This may be used in both `std` and `no_std` enviroments.
-    pub fn new_str(kind: ErrorKind, details: &'static str) -> Self {
-        Self { kind, details: ErrorDetails::Str(details) }
-    }
-    
-    /// Create a new instance, with a chained `Error` cause.
+    /// In `no_std` mode the *cause* is ignored.
     #[cfg(feature="std")]
-    pub fn new_err<E>(kind: ErrorKind, cause: E) -> Self
-        where E: Into<Box<std::error::Error + Send + Sync>>
+    pub fn new<E>(kind: ErrorKind, msg: &'static str, cause: Option<E>) -> Self
+        where E: Into<Box<stdError + Send + Sync>>
     {
-        Self { kind, details: ErrorDetails::Error(cause.into()) }
+        Self { kind, msg, cause: cause.map(|inner| inner.into()) }
+    }
+    /// Create a new instance, with specified kind, message, and optionally a
+    /// chained cause.
+    /// 
+    /// In `no_std` mode the *cause* is ignored.
+    #[cfg(not(feature="std"))]
+    pub fn new<E>(kind: ErrorKind, msg: &'static str, _cause: Option<E>) -> Self {
+        Self { kind, msg }
     }
     
-    /// Get details on the error, if available (string message or chained
-    /// "cause").
-    /// 
-    /// In the case of a chained error, the actual error can be obtained with
-    /// `std::error::Error::cause`.
-    pub fn details(&self) -> Option<&str> {
-        match self.details {
-            ErrorDetails::None => None,
-            ErrorDetails::Str(ref s) => Some(s),
-            ErrorDetails::Error(ref e) => Some(e.description()),
-        }
+    /// Get the error message
+    pub fn msg(&self) -> &'static str {
+        self.msg
     }
 }
 
@@ -356,44 +327,12 @@ impl fmt::Display for Error {
 }
 
 #[cfg(feature="std")]
-impl ::std::error::Error for Error {
+impl stdError for Error {
     fn description(&self) -> &str {
-        self.kind.description()
+        self.msg
     }
 
-    fn cause(&self) -> Option<&::std::error::Error> {
-        match self.details {
-            ErrorDetails::None => None,
-            // use a trick: implement Error for ErrorDetails
-            ErrorDetails::Str(_) => Some(&self.details),
-            ErrorDetails::Error(ref e) => Some(&**e),
-        }
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::ErrorKind;
-    use std::error::Error;  // for description() and cause() functions
-    
-    #[test]
-    fn description() {
-        let kind = ErrorKind::NotReady;
-        let err = super::Error::new_str(kind, "abc");
-        assert_eq!(kind.description(), err.description());
-    }
-    
-    #[test]
-    fn cause() {
-        let kind = ErrorKind::NotReady;
-        let err = super::Error::new_str(kind, "abc");   // static string
-        assert_eq!(err.details(), Some("abc"));
-        assert_eq!(err.cause().map(|e| e.description()), Some("abc"));
-        
-        assert_eq!(super::Error::new(kind).details(), None);
-        
-        let err = super::Error::new_err(kind, "def");   // automatically boxed
-        assert_eq!(err.details(), Some("def"));
-        assert_eq!(err.cause().map(|e| e.description()), Some("def"));
+    fn cause(&self) -> Option<&stdError> {
+        self.cause.as_ref().map(|e| e.as_ref() as &stdError)
     }
 }

@@ -14,7 +14,7 @@
 use core::cmp::max;
 use core::fmt::Debug;
 
-use {Rng, SeedableRng, Error};
+use {Rng, SeedableRng, Error, ErrorKind};
 #[cfg(feature="std")]
 use NewSeeded;
 
@@ -80,10 +80,22 @@ impl<R: Rng, Rsdr: Reseeder<R>> ReseedingRng<R, Rsdr> {
     /// Reseed the internal RNG if the number of bytes that have been
     /// generated exceed the threshold.
     /// 
-    /// If reseeding fails, return the error.
+    /// If reseeding fails, return an error with the original cause. Note that
+    /// if the cause has a permanent failure, we report a transient error and
+    /// skip reseeding.
     pub fn try_reseed_if_necessary(&mut self) -> Result<(), Error> {
         if self.bytes_generated >= self.generation_threshold {
-            self.reseeder.reseed(&mut self.rng)?;
+            if let Err(err) = self.reseeder.reseed(&mut self.rng) {
+                let newkind = match err.kind {
+                    a @ ErrorKind::NotReady => a,
+                    b @ ErrorKind::Transient => b,
+                    _ => {
+                        self.bytes_generated = 0;   // skip reseeding
+                        ErrorKind::Transient
+                    }
+                };
+                return Err(Error::new(newkind, "reseeding failed", Some(err)));
+            }
             self.bytes_generated = 0;
         }
         Ok(())
