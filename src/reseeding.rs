@@ -135,7 +135,6 @@ mod test {
     use std::iter::repeat;
     use mock::MockAddRng;
     use {SeedableRng, Rng, iter};
-    use distributions::ascii_word_char;
     use super::{ReseedingRng, Reseeder};
     
     #[derive(Debug)]
@@ -161,10 +160,11 @@ mod test {
 
     #[test]
     fn test_rng_seeded() {
+        // Default seed threshold is way beyond what we use here
         let mut ra: MyRng = SeedableRng::from_seed((ReseedMock, 2));
-        let mut rb: MyRng = SeedableRng::from_seed((ReseedMock, 2));
-        assert!(::test::iter_eq(iter(&mut ra).map(|rng| ascii_word_char(rng)).take(100),
-                                iter(&mut rb).map(|rng| ascii_word_char(rng)).take(100)));
+        let mut rb: MockAddRng<u32> = SeedableRng::from_seed(2);
+        assert!(::test::iter_eq(iter(&mut ra).map(|rng| rng.next_u32()).take(100),
+                                iter(&mut rb).map(|rng| rng.next_u32()).take(100)));
     }
 
     const FILL_BYTES_V_LEN: usize = 13579;
