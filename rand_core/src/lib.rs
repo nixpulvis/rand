@@ -283,8 +283,12 @@ impl ErrorKind {
 
 /// Error type of random number generators
 /// 
-/// This embeds two things, an `ErrorKind`, which can be matched over, and
-/// optional details provided to `new_str` or `new_err`.
+/// This embeds an `ErrorKind` which can be matched over (the *kind* describes
+/// how the error should be handled, rather than what cause it), a *message* to
+/// tell users what happened, and optionally a *cause* (which chains back to
+/// the original error).
+/// 
+/// The cause is omitted in `no_std` mode (see `Error::new` for details).
 #[derive(Debug)]
 pub struct Error {
     /// Error kind
@@ -298,7 +302,12 @@ impl Error {
     /// Create a new instance, with specified kind, message, and optionally a
     /// chained cause.
     /// 
-    /// In `no_std` mode the *cause* is ignored.
+    /// Note: `stdError` is an alias for `std::error::Error`.
+    /// 
+    /// If not targetting `std` (i.e. `no_std`), this function is replaced by
+    /// another with the same prototype, except that there are no bounds on the
+    /// type `E` (because both `Box` and `stdError` are unavailable), and the
+    /// `cause` is ignored.
     #[cfg(feature="std")]
     pub fn new<E>(kind: ErrorKind, msg: &'static str, cause: Option<E>) -> Self
         where E: Into<Box<stdError + Send + Sync>>
