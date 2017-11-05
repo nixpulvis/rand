@@ -165,14 +165,6 @@
 <span id="120">120</span>
 <span id="121">121</span>
 <span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -186,7 +178,6 @@
 
 <span class="doccomment">//! A wrapper around any Read to treat it as an RNG.</span>
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
 
 <span class="kw">use</span> {<span class="ident">Rng</span>, <span class="ident">Error</span>, <span class="ident">ErrorKind</span>};
@@ -245,16 +236,9 @@
     <span class="kw">fn</span> <span class="ident">try_fill</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">dest</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> { <span class="kw">return</span> <span class="prelude-val">Ok</span>(()); }
         <span class="comment">// Use `std::io::read_exact`, which retries on `ErrorKind::Interrupted`.</span>
-        <span class="self">self</span>.<span class="ident">reader</span>.<span class="ident">read_exact</span>(<span class="ident">dest</span>).<span class="ident">map_err</span>(<span class="ident">map_err</span>)
+        <span class="self">self</span>.<span class="ident">reader</span>.<span class="ident">read_exact</span>(<span class="ident">dest</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span>
+            <span class="ident">Error</span>::<span class="ident">new</span>(<span class="ident">ErrorKind</span>::<span class="ident">Unavailable</span>, <span class="string">&quot;ReadRng: read error&quot;</span>, <span class="prelude-val">Some</span>(<span class="ident">err</span>)))
     }
-}
-
-<span class="kw">fn</span> <span class="ident">map_err</span>(<span class="ident">err</span>: <span class="ident">io</span>::<span class="ident">Error</span>) <span class="op">-&gt;</span> <span class="ident">Error</span> {
-    <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">err</span>.<span class="ident">kind</span>() {
-        <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">UnexpectedEof</span> <span class="op">=&gt;</span> <span class="ident">ErrorKind</span>::<span class="ident">Unavailable</span>,
-        _ <span class="op">=&gt;</span> <span class="ident">ErrorKind</span>::<span class="ident">Other</span>,
-    };
-    <span class="ident">Error</span>::<span class="ident">new_err</span>(<span class="ident">kind</span>, <span class="ident">err</span>)
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>

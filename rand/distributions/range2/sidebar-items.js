@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["RangeFloat","Implementation of `RangeImpl` for float types."]],"struct":[["Range","Sample values uniformly between two bounds."],["RangeInt","Implementation of `RangeImpl` for integer types."]],"trait":[["RangeImpl","Helper trait handling actual range sampling."],["SampleRange","Helper trait for creating implementations of `RangeImpl`."]]});
