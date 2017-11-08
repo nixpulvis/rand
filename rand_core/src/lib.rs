@@ -283,15 +283,14 @@ impl ErrorKind {
 
 /// Error type of random number generators
 /// 
-/// This embeds an `ErrorKind` which can be matched over (the *kind* describes
-/// how the error should be handled, rather than what cause it), a *message* to
-/// tell users what happened, and optionally a *cause* (which chains back to
-/// the original error).
+/// This embeds an `ErrorKind` which can be matched over, a *message* to tell
+/// users what happened, and optionally a *cause* (which allows chaining back
+/// to the original error).
 /// 
 /// The cause is omitted in `no_std` mode (see `Error::new` for details).
 #[derive(Debug)]
 pub struct Error {
-    /// Error kind
+    /// Error kind. This enum is included to aid handling of errors.
     pub kind: ErrorKind,
     msg: &'static str,
     #[cfg(feature="std")]
@@ -331,7 +330,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "RNG error: {}", self.kind.description())
+        write!(f, "RNG error [{}]: {}", self.kind.description(), self.msg())
     }
 }
 
